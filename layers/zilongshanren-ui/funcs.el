@@ -34,10 +34,11 @@
    ((string= "8" str) "➑")
    ((string= "9" str) "➒")
    ((string= "0" str) "➓")))
-
+;; yiddi: it's seem to be 'winum' not the 'winum-mode'
 (defun window-number-mode-line ()
   "The current window number. Requires `winum-mode' to be enabled."
-  (when (bound-and-true-p winum-mode)
+  (when (bound-and-true-p winum)
+    ;; yiddi:modify winum-mode to winum
     (let* ((num (winum-get-number))
            (str (when num (int-to-string num))))
       (spaceline--unicode-number str))))

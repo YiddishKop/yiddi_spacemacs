@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     winum                             ;;solve"error during redisplay:(eval (propertize...)) in zilongshanren-ui.el"
      ivy
      better-defaults
      github
@@ -56,7 +57,7 @@ values."
      (auto-completion :variables auto-completion-enable-sort-by-usage t
                       auto-completion-enable-snippets-in-popup t
                       :disabled-for org markdown)
-     (osx :variables osx-dictionary-dictionary-choice "Simplified Chinese - English")
+     ;; (osx :variables osx-dictionary-dictionary-choice "Simplified Chinese - English") yiddi:never user
      restclient
      (gtags :disabled-for clojure emacs-lisp javascript latex python shell-scripts)
      (shell :variables shell-default-shell 'eshell)
@@ -72,7 +73,7 @@ values."
              python-test-runner '(nose pytest))
      (ruby :variables ruby-version-manager 'chruby)
      ruby-on-rails
-     lua
+     ;; lua ;; yiddi:never use
      html
      javascript
      (typescript :variables
@@ -81,8 +82,8 @@ values."
      emacs-lisp
      (clojure :variables clojure-enable-fancify-symbols t)
      racket
-     (c-c++ :variables
-            c-c++-default-mode-for-headers 'c++-mode)
+     ;; (c-c++ :variables
+     ;;        c-c++-default-mode-for-headers 'c++-mode);; yiddi:never use
      zilongshanren
      (chinese :packages youdao-dictionary fcitx
               :variables chinese-enable-fcitx nil
@@ -348,8 +349,8 @@ values."
   (setq tramp-ssh-controlmaster-options
         "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
 
-  ;; ss proxy. But it will cause anacond-mode failed.
-  (setq socks-server '("Default server" "127.0.0.1" 1080 5))
+  ;; yiddi:never use ss proxy. But it will cause anacond-mode failed.
+  ;; (setq socks-server '("Default server" "127.0.0.1" 1080 5))
   (setq evil-shift-round nil)
   (setq byte-compile-warnings '(not obsolete))
   (setq warning-minimum-level :error)
@@ -379,7 +380,8 @@ values."
   (setq split-width-threshold 120)
   (linum-relative-on)
 
-  (spacemacs|add-company-backends :modes text-mode)
+  ;; TODO yiddi:error, when emacs start
+  ;; (spacemacs|add-company-backends :modes text-mode)
 
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 

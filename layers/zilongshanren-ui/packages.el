@@ -1,3 +1,4 @@
+
 ;;; packages.el --- zilong-ui layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2014-2016 zilongshanren
@@ -11,7 +12,8 @@
 
 (defconst zilongshanren-ui-packages
   '(
-    (zilong-mode-line :location built-in)
+    ;; winum-mode                          ;; yiddi: always tips error when emacs started
+    ;; (zilong-mode-line :location built-in)
     diminish
     popwin
     (whitespace :location built-in)
@@ -23,6 +25,9 @@
     ;; evil-vimish-fold
     )
   )
+;; yiddi: add a init function of winum-mode
+;; (defun zilongshanren-ui/init-winum-mode ()
+;;   (use-package winum-mode))
 
 (defun zilongshanren-ui/init-zilong-mode-line ()
   (defun zilongshanren/display-mode-indent-width ()
