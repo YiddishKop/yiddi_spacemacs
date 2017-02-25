@@ -13,7 +13,7 @@
 (defconst zilongshanren-ui-packages
   '(
     ;; winum-mode                          ;; yiddi: always tips error when emacs started
-    ;; (zilong-mode-line :location built-in)
+    (zilong-mode-line :location built-in)
     diminish
     popwin
     (whitespace :location built-in)

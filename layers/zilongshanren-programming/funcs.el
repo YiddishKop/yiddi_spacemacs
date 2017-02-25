@@ -218,6 +218,8 @@ version 2015-08-21"
 
 (defvar my-tags-updated-time nil)
 
+;; DONE yiddi comment
+;;
 (defun my-create-tags-if-needed (SRC-DIR &optional FORCE)
   "return the full path of tags file"
   (let ((dir (file-name-as-directory (file-truename SRC-DIR)))
@@ -231,13 +233,20 @@ version 2015-08-21"
        (format "ctags -f %s -e -R %s" file dir)))
     file))
 
+;; DONE yiddi comment
+;; when this func called
+;; it will traverse the tags-table-list to get the directory part of absolute path of every tag in the list
 (defun my-update-tags ()
   (interactive)
   "check the tags in tags-table-list and re-create it"
   (dolist (tag tags-table-list)
     (my-create-tags-if-needed (file-name-directory tag) t)))
 
-
+;; DONE yiddi comment
+;; when this func called
+;; - if not coming to predefined my-tags-update-time, it will build tags file immediately;
+;; - if prefix is nil and the time gap between now and last time tags updated is less than 300s, it will message 'no need to update'
+;; - if both not statisfy below, it will call function: my-update-tags
 (defun my-auto-update-tags-when-save (prefix)
       (interactive "P")
       (cond
@@ -254,7 +263,11 @@ version 2015-08-21"
         (my-update-tags)
         (message "updated tags after %d seconds." (- (float-time (current-time)) (float-time my-tags-updated-time))))))
 
-
+;; DONE yiddi comment
+;; this func will check whether project file path contains keyword 'guanghui'
+;; if so , it will check whether it has keyword 'cocos2d'
+;; if so , it will set vaule of 'tags-table-list' to a file path
+;; on another condition, if 'github/fireball' occur, it will set 'tags-table-list' to anoter path
 (defun my-setup-develop-environment ()
   (interactive)
   (when (my-project-name-contains-substring "guanghui")

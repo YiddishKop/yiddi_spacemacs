@@ -31,7 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     winum                             ;;solve"error during redisplay:(eval (propertize...)) in zilongshanren-ui.el"
+     ;; winum                             ;;solve"error during redisplay:(eval (propertize...)) in zilongshanren-ui.el"
      ivy
      better-defaults
      github
@@ -93,7 +93,10 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(sicp)
+   dotspacemacs-additional-packages '(
+                                      sicp
+                                      winum ;yiddi:add winum
+                                      )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages
@@ -182,7 +185,7 @@ values."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 14
+                               :size 15
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -357,13 +360,13 @@ values."
   ;; hack for remove purpose mode
   (setq purpose-mode nil)
   )
-
 (defun dotspacemacs/user-config ()
   ;;解决org表格里面中英文对齐的问题
   (when (configuration-layer/layer-usedp 'chinese)
     (when (and (spacemacs/system-is-mac) window-system)
       (spacemacs//set-monospaced-font "Source Code Pro" "Hiragino Sans GB" 14 16)))
-
+  ;; yiddi: enable winum-mode, to fix window-num can not display in head of mode-line
+  (winum-mode)
   ;; Setting Chinese Font
   (when (and (spacemacs/system-is-mswindows) window-system)
     (setq ispell-program-name "aspell")
@@ -382,7 +385,8 @@ values."
 
   ;; TODO yiddi:error, when emacs start
   ;; (spacemacs|add-company-backends :modes text-mode)
-
+  ;; TODO yiddi:add to coodinate with org-capture extension in chrome
+  (require 'org-protocol)
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 
   ;; temp fix for ivy-switch-buffer
@@ -447,8 +451,7 @@ values."
                           (let ((projectile-completion-system 'ivy)
                                 (old-default-directory default-directory))
                             (projectile-switch-project-by-name project)
-                            (setq default-directory old-default-directory))))))
-  )
+                            (setq default-directory old-default-directory)))))))
 
 (setq custom-file (expand-file-name "custom.el" dotspacemacs-directory))
 (load custom-file 'no-error 'no-message)

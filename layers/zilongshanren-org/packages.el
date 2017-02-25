@@ -14,9 +14,10 @@
 (defconst zilongshanren-org-packages
   '(
     (org :location built-in)
-    org-mac-link
+    ;; org-mac-link ;; yiddi:never use
     org-octopress
     org-pomodoro
+    ;; org-protocol ;; yiddi
     deft
     ;; org-tree-slide
     ;; ox-reveal
@@ -24,7 +25,7 @@
     ;; org-download
     ;; plain-org-wiki
     )
-)
+  )
 
 (defun zilongshanren-org/post-init-org-pomodoro ()
   (progn
@@ -249,8 +250,17 @@ unwanted space when exporting org-mode to html."
               ("j" "Journal Entry"
                entry (file+datetree org-agenda-file-journal)
                "* %?"
+               :empty-lines 1)
+              ;; yiddi:add to coordinate with org-capture extension in chrome.
+              ("p" "Protocol" entry (file+headline "~/Documents/org-notes/notes-chrome.org" "Chome Inbox")
+               "* TODO %c\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?"
+               :immediate-finish)
+              ("L" "Protocol Link" entry (file+headline "~/Documents/org-notes/notes-chrome.org" "Chome Inbox")
+               "* TODO  %? [[%:link][%:description]] \nCaptured On: %U"
+               )
+              ("i" "Image-emacs" entry (file+headline "~/Documents/org-notes/Img-emacs.org" "Image-emacs")
+               "* TODO [#C] %?\n  %i\n"
                :empty-lines 1)))
-
       ;;An entry without a cookie is treated just like priority ' B '.
       ;;So when create new task, they are default 重要且紧急
       (setq org-agenda-custom-commands
