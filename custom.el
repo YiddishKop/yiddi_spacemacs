@@ -5,7 +5,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-case-fold-search nil t)
+ '(ahs-case-fold-search nil)
  '(command-log-mode-window-size 50)
  '(company-dabbrev-minimum-length 3)
  '(company-dabbrev-other-buffers nil)
@@ -27,7 +27,26 @@
  '(lua-documentation-url "http://www.lua.org/manual/5.3/manual.html")
  '(magit-use-overlays nil)
  '(only-global-abbrevs t)
- '(org-agenda-custom-commands nil)
+ '(org-agenda-custom-commands
+   (quote
+    (("w" . "任务安排")
+     ("wa" "重要且紧急的任务" tags-todo "+PRIORITY=\"A\"" nil)
+     ("wb" "重要且不紧急的任务" tags-todo "-Weekly-Monthly-Daily+PRIORITY=\"B\"" nil)
+     ("wc" "不重要且紧急的任务" tags-todo "+PRIORITY=\"C\"" nil)
+     ("b" "Blog" tags-todo "BLOG" nil)
+     ("p" . "项目安排")
+     ("pw" tags-todo "PROJECT+WORK+CATEGORY=\"cocos2d-x\"" nil)
+     ("pl" tags-todo "PROJECT+DREAM+CATEGORY=\"zilongshanren\"" nil)
+     ("W" "Weekly Review"
+      ((stuck "" nil)
+       (tags-todo "PROJECT" nil))
+      nil)
+     ("i" "Important: Urgent things and Phone calls"
+      ((tags "URGENT"
+             ((org-agenda-overriding-header "Urgent things to do")))
+       (tags "PHONE"
+             ((org-agenda-overriding-header "Phone to calls"))))
+      nil nil))))
  '(org-agenda-ndays 1)
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)

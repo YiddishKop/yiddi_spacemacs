@@ -54,7 +54,10 @@ values."
           magit-refs-show-commit-count 'all
           magit-revision-show-gravatars nil)
      (ibuffer :variables ibuffer-group-buffers-by 'projects)
-     (auto-completion :variables auto-completion-enable-sort-by-usage t
+     ;; https://emacs-china.org/t/2016mbp-quickhelp/1644/16
+     (auto-completion :variables
+                      auto-completion-enable-sort-by-usage t
+                      auto-completion-enable-help-tooltip t ;;TODO yiddi: add to solve *company-quickhelp*
                       auto-completion-enable-snippets-in-popup t
                       :disabled-for org markdown)
      ;; (osx :variables osx-dictionary-dictionary-choice "Simplified Chinese - English") yiddi:never user
@@ -77,8 +80,8 @@ values."
      html
      javascript
      (typescript :variables
-                typescript-fmt-on-save nil
-                typescript-fmt-tool 'typescript-formatter)
+                 typescript-fmt-on-save nil
+                 typescript-fmt-tool 'typescript-formatter)
      emacs-lisp
      (clojure :variables clojure-enable-fancify-symbols t)
      racket
@@ -99,6 +102,8 @@ values."
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
+
+   ;;DONE yiddi:add, delete *company-quickhelp* in *dotspacemacs-excluded-packages*
    dotspacemacs-excluded-packages
    '(magit-gh-pulls magit-gitflow org-projectile evil-mc
                     evil-args evil-ediff evil-exchange evil-unimpaired
@@ -114,7 +119,7 @@ values."
                     helm-flyspell flyspell-correct-helm clean-aindent-mode
                     helm-c-yasnippet ace-jump-helm-line helm-make magithub
                     helm-themes helm-swoop helm-spacemacs-help smeargle
-                    ido-vertical-mode flx-ido company-quickhelp counsel-projectile
+                    ido-vertical-mode flx-ido counsel-projectile
                     window-purpose ivy-purpose helm-purpose spacemacs-purpose-popwin
                     )
    dotspacemacs-install-packages 'used-only
@@ -349,6 +354,12 @@ values."
 
   ;; https://github.com/syl20bnr/spacemacs/issues/2705
   ;; (setq tramp-mode nil)
+
+  ;; yiddi: hope to solve anaconda-mode server error problem, but failed
+  ;; https://github.com/syl20bnr/spacemacs/issues/2961
+  (setenv "NO_PROXY" "127.0.0.1" )
+  (setenv "no_proxy" "127.0.0.1" )
+
   (setq tramp-ssh-controlmaster-options
         "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
 
@@ -382,7 +393,8 @@ values."
   ;; force horizontal split window
   (setq split-width-threshold 120)
   (linum-relative-on)
-
+  ;; TODO yiddi: company-quickhelp-mode not in *company-frontends*
+  ;; (add-hook 'after-init-hook 'global-company-mode 'company-quickhelp-mode)
   ;; TODO yiddi:error, when emacs start
   ;; (spacemacs|add-company-backends :modes text-mode)
   ;; TODO yiddi:add to coodinate with org-capture extension in chrome
@@ -460,4 +472,4 @@ values."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-)
+  )

@@ -14,6 +14,7 @@
 
 (setq zilongshanren-programming-packages
       '(
+        ;; jedi ; yiddi add hopping to solve anaconda-server problem
         css-mode
         paredit
         lispy
@@ -45,6 +46,13 @@
         ;; editorconfig
         robe
         ))
+;; yiddi:add
+;; (defun zilongshanren-programming/post-init-jedi
+;;     (use-package jedi
+;;       :ensure t
+;;       :init
+;;       (add-hook 'python-mode-hook 'jedi:setup)
+;;       (add-hook 'python-mode-hook 'jedi:ac-setup)))
 
 (defun zilongshanren-programming/post-init-robe ()
   (progn

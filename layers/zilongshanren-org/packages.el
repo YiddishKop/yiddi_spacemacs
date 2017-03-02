@@ -50,7 +50,10 @@
       ;; (add-to-list 'org-modules "org-habit")
       (add-to-list 'org-modules 'org-habit)
       (require 'org-habit)
-
+      ;; ----------------------
+      ;; yiddi:comment
+      ;; org-protocol should add here
+      ;; ----------------------
       (setq org-refile-use-outline-path 'file)
       (setq org-outline-path-complete-in-steps nil)
       (setq org-refile-targets
