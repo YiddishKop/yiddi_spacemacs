@@ -17,7 +17,6 @@
     ;; org-mac-link ;; yiddi:never use
     org-octopress
     org-pomodoro
-    ;; org-protocol ;; yiddi
     deft
     ;; org-tree-slide
     ;; ox-reveal
