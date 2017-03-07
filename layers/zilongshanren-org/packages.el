@@ -40,8 +40,10 @@
   (add-hook 'org-mode-hook (lambda () (spacemacs/toggle-line-numbers-off)) 'append)
   (with-eval-after-load 'org
     (progn
-      
-      (spacemacs|disable-company org-mode)
+      ;; ----------------------
+      ;; yiddi:add, want company in org-mode
+      ;; (spacemacs|disable-company org-mode)
+      ;; ----------------------
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "," 'org-priority)
       (require 'org-compat)
@@ -182,11 +184,21 @@
             (expand-file-name "~/.spacemacs.d/plantuml.jar"))
       (setq org-ditaa-jar-path "~/.spacemacs.d/ditaa.jar")
 
+      ;; yiddi:add
+      ;; 1.  http://emacs.stackexchange.com/questions/28441/org-mode-9-unable-to-eval-code-blocks
+      ;; DONE solve org9.0 babel cannot work
+      ;; 2.  https://lists.gnu.org/archive/html/emacs-orgmode/2016-04/msg00298.html
+      ;; DONE solve shell <- sh
       (org-babel-do-load-languages
        'org-babel-load-languages
        '((perl . t)
          (ruby . t)
-         (sh . t)
+         ;; yiddi:comment
+         ;; (sh . t)
+         ;; yiddi:add
+         ;; ------
+         (shell . t)
+         ;; ------
          (dot . t)
          (js . t)
          (latex .t)
@@ -194,7 +206,15 @@
          (emacs-lisp . t)
          (plantuml . t)
          (C . t)
-         (ditaa . t)))
+         (ditaa . t)
+         ;; yiddi:add
+         ;; -------
+         (calc . t)
+         (java . t)
+         ;; (rst . t)
+         ;; -------
+         ))
+
 
 
       (require 'ox-md nil t)
