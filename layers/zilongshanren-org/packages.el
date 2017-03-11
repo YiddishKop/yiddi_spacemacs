@@ -260,29 +260,33 @@ unwanted space when exporting org-mode to html."
               ("s" "Code Snippet" entry
                (file org-agenda-file-code-snippet)
                "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
-              ("w" "work" entry (file+headline org-agenda-file-gtd "Cocos2D-X")
-               "* TODO [#A] %?\n  %i\n %U"
-               :empty-lines 1)
+              ;; yiddi:comment ------------------
+              ;; ("w" "work" entry (file+headline org-agenda-file-gtd "Cocos2D-X")
+              ;;  "* TODO [#A] %?\n  %i\n %U"
+              ;;  :empty-lines 1)
+              ;; --------------------------------
               ("c" "Chrome" entry (file+headline org-agenda-file-note "Quick notes")
-               "* TODO [#C] %?\n %(zilongshanren/retrieve-chrome-current-tab-url)\n %i\n %U"
+               "* [#C] %?\n %(zilongshanren/retrieve-chrome-current-tab-url)\n %i\n %U"
                :empty-lines 1)
               ("l" "links" entry (file+headline org-agenda-file-note "Quick notes")
-               "* TODO [#C] %?\n  %i\n %a \n %U"
+               "* [#C] %?\n  %i\n %a \n %U"
                :empty-lines 1)
               ("j" "Journal Entry"
                entry (file+datetree org-agenda-file-journal)
                "* %?"
                :empty-lines 1)
-              ;; yiddi:add to coordinate with org-capture extension in chrome.
-              ("p" "Protocol" entry (file+headline "~/Documents/org-notes/notes-chrome.org" "Chome Inbox")
+              ;; yiddi:add to coordinate with org-capture extension in chrome. -----------
+              ("p" "Protocol" entry (file+headline org-agenda-file-journal"Chome Inbox")
                "* TODO %c\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?"
                :immediate-finish)
-              ("L" "Protocol Link" entry (file+headline "~/Documents/org-notes/notes-chrome.org" "Chome Inbox")
+              ("L" "Protocol Link" entry (file+headline org-agenda-file-journal"Chome Inbox")
                "* TODO  %? [[%:link][%:description]] \nCaptured On: %U"
                )
-              ("i" "Image-emacs" entry (file+headline "~/Documents/org-notes/Img-emacs.org" "Image-emacs")
-               "* TODO [#C] %?\n  %i\n"
-               :empty-lines 1)))
+              ("f" "family-todo" entry (file+headline org-agenda-file-gtd "Family")
+               "* TODO [#A] %?\n  %i\n %U"
+               :empty-lines 1)
+              ;; -------------------------------------------------------------------------
+              ))
       ;;An entry without a cookie is treated just like priority ' B '.
       ;;So when create new task, they are default 重要且紧急
       (setq org-agenda-custom-commands

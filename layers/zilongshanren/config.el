@@ -8,9 +8,16 @@
   "blog-admin files location")
 
 (setq-default
- org-agenda-dir "~/org-notes"
- deft-dir "~/org-notes"
- blog-admin-dir "~/4gamers.cn")
+ ;; yiddi:comment -----
+ ;; org-agenda-dir "~/org-notes"
+ ;; deft-dir "~/org-notes"
+ ;; blog-admin-dir "~/4gamers.cn"
+ ;; yiddi:add     -----
+ org-agenda-dir "~/Documents/org-notes"
+ deft-dir "~/Documents/org-notes"
+ blog-admin-dir "~/YiddiBlog"
+ ;; -------------------
+ )
 
 ;;load sensitive data
 ;; or (like spacemacs init.el)put the above variable into it ,then the own value separated from public config
