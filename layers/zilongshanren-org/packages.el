@@ -257,14 +257,17 @@ unwanted space when exporting org-mode to html."
               ("b" "Blog Ideas" entry (file+headline org-agenda-file-note "Blog Ideas")
                "* TODO [#B] %?\n  %i\n %U"
                :empty-lines 1)
-              ("s" "Code Snippet" entry
-               (file org-agenda-file-code-snippet)
-               "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
               ;; yiddi:comment ------------------
+              ;; ("s" "Code Snippet" entry
+              ;;  (file org-agenda-file-code-snippet)
+              ;;  "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
               ;; ("w" "work" entry (file+headline org-agenda-file-gtd "Cocos2D-X")
               ;;  "* TODO [#A] %?\n  %i\n %U"
               ;;  :empty-lines 1)
-              ;; --------------------------------
+              ;; yiddi:add to collect good source code block-------------------------------
+              ("s" "Code Snippet" entry
+               (file org-agenda-file-code-snippet)
+               "* %?\t%^g\n#+BEGIN_SRC %^{language}\n%c\n#+END_SRC\nLink:\t%a\nFile:\t%F\nTime:\t%T")
               ("c" "Chrome" entry (file+headline org-agenda-file-note "Quick notes")
                "* [#C] %?\n %(zilongshanren/retrieve-chrome-current-tab-url)\n %i\n %U"
                :empty-lines 1)
@@ -283,7 +286,7 @@ unwanted space when exporting org-mode to html."
                "* TODO  %? [[%:link][%:description]] \nCaptured On: %U"
                )
               ("f" "family-todo" entry (file+headline org-agenda-file-gtd "Family")
-               "* TODO [#A] %?\n  %i\n %U"
+               "* TODO [#C] %?\n  %i\n %U"
                :empty-lines 1)
               ;; -------------------------------------------------------------------------
               ))
