@@ -93,7 +93,8 @@
 
       (setq org-todo-keywords
             (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
-                    (sequence "WAITING(w@/!)" "SOMEDAY(S)" "|" "CANCELLED(c@/!)" "MEETING(m)" "PHONE(p)"))))
+                    (sequence "WAITING(w@/!)" "SOMEDAY(S)" "|" "CANCELLED(c@/!)" "MEETING(m)" "PHONE(p)")
+                    )))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       ;; Org clock
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -248,15 +249,7 @@ unwanted space when exporting org-mode to html."
       ;;http://www.howardism.org/Technical/Emacs/journaling-org.html
       ;;add multi-file journal
       (setq org-capture-templates
-            '(("t" "Todo" entry (file+headline org-agenda-file-gtd "Workspace")
-               "* TODO [#B] %?\n  %i\n"
-               :empty-lines 1)
-              ("n" "notes" entry (file+headline org-agenda-file-note "Quick notes")
-               "* %?\n  %i\n %U"
-               :empty-lines 1)
-              ("b" "Blog Ideas" entry (file+headline org-agenda-file-note "Blog Ideas")
-               "* TODO [#B] %?\n  %i\n %U"
-               :empty-lines 1)
+            '(
               ;; yiddi:comment ------------------
               ;; ("s" "Code Snippet" entry
               ;;  (file org-agenda-file-code-snippet)
@@ -264,29 +257,69 @@ unwanted space when exporting org-mode to html."
               ;; ("w" "work" entry (file+headline org-agenda-file-gtd "Cocos2D-X")
               ;;  "* TODO [#A] %?\n  %i\n %U"
               ;;  :empty-lines 1)
-              ;; yiddi:add to collect good source code block-------------------------------
-              ("s" "Code Snippet" entry
-               (file org-agenda-file-code-snippet)
-               "* %?\t%^g\n#+BEGIN_SRC %^{language}\n%c\n#+END_SRC\nLink:\t%a\nFile:\t%F\nTime:\t%T")
-              ("c" "Chrome" entry (file+headline org-agenda-file-note "Quick notes")
-               "* [#C] %?\n %(zilongshanren/retrieve-chrome-current-tab-url)\n %i\n %U"
+              ;; ("c" "Chrome" entry (file+headline org-agenda-file-note "Quick notes")
+              ;;  "* [#C] %?\n %(zilongshanren/retrieve-chrome-current-tab-url)\n %i\n %U"
+              ;;  :empty-lines 1)
+              ;; ("j" "知識收集:Journal Entry" entry (file+datetree org-agenda-file-journal)
+              ;;  "* %?"
+              ;;  :empty-lines 1)
+              ;; ("n" "notes" entry (file+headline org-agenda-file-note "Quick notes")
+              ;;  "* %?\n  %i\n %U"
+              ;;  :empty-lines 1)
+              ;; ---------------------------------
+              ;; 快速收集就是GTD中的inbox，這裏收集所有在你腦中的東西
+              ;; 撰寫時即需通過refile功能加入某個分支：
+              ;; 可以當下解決的，立即解決，或者找人解決，注明PERSON
+              ;; 不能解決的分步驟解決，並將其上升爲project,通過org-refile 發送到其他三個文件中做詳細部署。
+              ("t" "任務收集：Inbox" entry (file+headline org-agenda-file-gtd "Inbox")
+               "* TODO [#B] %?\n  %i\n"
                :empty-lines 1)
-              ("l" "links" entry (file+headline org-agenda-file-note "Quick notes")
-               "* [#C] %?\n  %i\n %a \n %U"
+              ("w" "任務整理：Work" entry (file+headline org-agenda-file-gtd "Work")
+               "* TODO [#B] %?\n  %i\n"
                :empty-lines 1)
-              ("j" "Journal Entry"
-               entry (file+datetree org-agenda-file-journal)
-               "* %?"
+              ;; 短時間內完成不了，必須分步驟完成，就升級其爲project。
+              ;; 家庭，個人，工作
+              ("f" "任務整理：Family" entry (file+headline org-agenda-file-gtd "Family")
+               "* SOMEDAY %?
+               :PROPERTIES:
+               :PERSON: %^{preson}
+               :WHERE: %^{where}
+               :WHEN: %^{When}t
+               :END:
+               - Recommended by %^{recommended by}
+               :LOGBOOK:
+               - Added: %U
+               :END: "
+               :empty-lines 1)
+              ("y" "任務整理：Personal" entry (file+headline org-agenda-file-gtd "Personal")
+               "* TODO [#C] %?\n  %i\n %U"
+               :empty-lines 1)
+              ;; 瑣事進入，會直接暫停當前正在進行的任務計時，轉而進行這個任務，直到這個任務標記完成
+              ;; 才會重啓。
+              ("m" "瑣事進入：Trifles" entry (file+headline org-agenda-file-gtd "Trifles")
+               "* TODO [#C] %?\n  %i\n %T"
+               :clock-in)
+              ;; yiddi:comment 知識收集需要及時做 org-refile
+              ("j" "知識收集:Journal Entry" entry (file+headline org-agenda-file-journal "QuickNotes")
+               "* %?\n  %i\n %U"
                :empty-lines 1)
               ;; yiddi:add to coordinate with org-capture extension in chrome. -----------
-              ("p" "Protocol" entry (file+headline org-agenda-file-journal"Chome Inbox")
-               "* TODO %c\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?"
-               :immediate-finish)
-              ("L" "Protocol Link" entry (file+headline org-agenda-file-journal"Chome Inbox")
-               "* TODO  %? [[%:link][%:description]] \nCaptured On: %U"
+              ;; Must Not modify the hotkey 'p' and 'L', they are defined by chrome extension: org-capture
+              ("p" "知識收集:Chome Clip" entry (file+headline org-agenda-file-journal"Chome Clip Inbox")
+               "* %? \nSource: %u, %c\n\n\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n"
+               :empty-lines 1)
+              ("L" "知識收集:Chrom Link" entry (file+headline org-agenda-file-journal"Chome Inbox")
+               "* %? [[%:link][%:description]] \nCaptured On: %U"
                )
-              ("f" "family-todo" entry (file+headline org-agenda-file-gtd "Family")
-               "* TODO [#C] %?\n  %i\n %U"
+              ;; yiddi:add to collect good source code block-------------------------------
+              ("s" "代碼收集:Code Snippet" entry (file org-agenda-file-code-snippet)
+               "* %?\t%^g\n#+BEGIN_SRC %^{language}\n%c\n#+END_SRC\nLink:\t%a\nFile:\t%F\n")
+              ("i" "Imaginary Ideas" entry (file+headline org-agenda-file-note "Imaginary Ideas")
+               "* SOMEDAY [#B] %?\n  %i\n %U"
+               :empty-lines 1)
+              ;; yiddi:comment 這個template相當於對當前文件做簡單的位置記錄
+              ("l" "links" entry (file+headline org-agenda-file-note "Quick notes")
+               "* [#C] %?\n  %i\n %a \n %U"
                :empty-lines 1)
               ;; -------------------------------------------------------------------------
               ))
