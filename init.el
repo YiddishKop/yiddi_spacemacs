@@ -36,13 +36,14 @@ values."
      ;; yiddi:add
      (elfeed :variables
              rmh-elfeed-org-files (list "~/Documents/org-notes/Elfeed/elfeed.org")
-             elfeed-enable-web-interface t)
+             elfeed-enable-web-interface t
+             elfeed-db-directory "~/Documents/org-notes/Elfeed/.elfeed")
      ivy
      better-defaults
      github
      ranger
      colors
-     prodigy
+     prodigy                            ;; yiddi:從emacs內部開啓外部服務
      search-engine
      graphviz
      (syntax-checking :variables syntax-checking-enable-by-default nil

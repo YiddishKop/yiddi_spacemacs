@@ -5,7 +5,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-case-fold-search nil t)
+ '(ahs-case-fold-search nil)
  '(command-log-mode-window-size 50)
  '(company-dabbrev-minimum-length 3)
  '(company-dabbrev-other-buffers nil)
@@ -14,7 +14,7 @@
  '(ctags-update-delay-seconds 1024)
  '(elfeed-feeds
    (quote
-    ("http://kitchingroup.cheme.cmu.edu/blog/category/orgmode/feed/" "http://kitchingroup.cheme.cmu.edu/blog/category/orgmode/feed/" "http://kitchingroup.cheme.cmu.edu/blog/category/org-mode/feed/" "http://kitchingroup.cheme.cmu.edu/blog/category/emacs/feed/")))
+    ("http://kitchingroup.cheme.cmu.edu/blog/category/emacs/feed/" "http://kitchingroup.cheme.cmu.edu/blog/category/data-analysis/feed/")))
  '(erc-nick "zilongshanren")
  '(erc-port 6666)
  '(evil-want-C-i-jump t)

@@ -952,6 +952,16 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
       :env '(("LANG" "en_US.UTF-8")
              ("LC_ALL" "en_US.UTF-8")))
     ;; define service
+    ;; yiddi:add to test how prodigy works-----
+    (prodigy-define-service
+      :name "yiddi test"
+      :command "pip"
+      :args '("list" "--format=columns")
+      :cwd "~/"
+      :tags '(yiddi)
+      :kill-signal 'sigkill
+      :kill-process-buffer-on-stop t)
+    ;; ---------------------------------------
     (prodigy-define-service
       :name "Preview cocos2d-x web"
       :command "python"
