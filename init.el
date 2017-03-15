@@ -34,6 +34,7 @@ values."
      ;; winum                             ;; yiddi:add to solve "error during redisplay:(eval (propertize...)) in zilongshanren-ui.el"
      ;; restructuredtext                   ;; yiddi:add
      ;; yiddi:add
+     pandoc
      (elfeed :variables
              rmh-elfeed-org-files (list "~/Documents/org-notes/Elfeed/elfeed.org")
              elfeed-enable-web-interface t
@@ -105,6 +106,7 @@ values."
    dotspacemacs-additional-packages '(
                                       sicp
                                       winum ;yiddi:add winum
+                                      kanban ;yiddi:add to enhance org-mode
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()

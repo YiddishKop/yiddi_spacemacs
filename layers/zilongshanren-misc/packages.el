@@ -11,6 +11,7 @@
 
 (setq zilongshanren-misc-packages
       '(
+        elfeed
         projectile
         prodigy
         find-file-in-project
@@ -51,10 +52,10 @@
       (spacemacs/set-leader-keys "hh" 'highlight-frame-toggle)
       (spacemacs/set-leader-keys "hc" 'clear-highlight-frame)
       (setq-default highlight-faces
-        '(('hi-red-b . 0)
-          ('hi-yellow . 0)
-          ('hi-pink . 0)
-          ('hi-blue-b . 0))))))
+                    '(('hi-red-b . 0)
+                      ('hi-yellow . 0)
+                      ('hi-pink . 0)
+                      ('hi-blue-b . 0))))))
 
 (defun zilongshanren-misc/post-init-golden-ratio ()
   (with-eval-after-load 'golden-ratio
@@ -619,28 +620,95 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
     :defer t
     :config
     (progn
+      ;; yiddi:comment , manage feeds with elfeed-org instead
+      ;; (setq elfeed-feeds
+      ;;       '("http://nullprogram.com/feed/"
+      ;;         "http://z.caudate.me/rss/"
+      ;;         "http://irreal.org/blog/?feed=rss2"
+      ;;         "http://feeds.feedburner.com/LostInTheTriangles"
+      ;;         "http://tonybai.com/feed/"
+      ;;         "http://planet.emacsen.org/atom.xml"
+      ;;         "http://feeds.feedburner.com/emacsblog"
+      ;;         "http://blog.binchen.org/rss.xml"
+      ;;         "http://oremacs.com/atom.xml"
+      ;;         "http://blog.gemserk.com/feed/"
+      ;;         "http://www.masteringemacs.org/feed/"
+      ;;         "http://t-machine.org/index.php/feed/"
+      ;;         "http://gameenginebook.blogspot.com/feeds/posts/default"
+      ;;         "http://feeds.feedburner.com/ruanyifeng"
+      ;;         "http://coolshell.cn/feed"
+      ;;         "http://blog.devtang.com/atom.xml"
+      ;;         "http://emacsist.com/rss"
+      ;;         "http://puntoblogspot.blogspot.com/feeds/2507074905876002529/comments/default"
+      ;;         "http://angelic-sedition.github.io/atom.xml"))
 
-      (setq elfeed-feeds
-            '("http://nullprogram.com/feed/"
-              "http://z.caudate.me/rss/"
-              "http://irreal.org/blog/?feed=rss2"
-              "http://feeds.feedburner.com/LostInTheTriangles"
-              "http://tonybai.com/feed/"
-              "http://planet.emacsen.org/atom.xml"
-              "http://feeds.feedburner.com/emacsblog"
-              "http://blog.binchen.org/rss.xml"
-              "http://oremacs.com/atom.xml"
-              "http://blog.gemserk.com/feed/"
-              "http://www.masteringemacs.org/feed/"
-              "http://t-machine.org/index.php/feed/"
-              "http://gameenginebook.blogspot.com/feeds/posts/default"
-              "http://feeds.feedburner.com/ruanyifeng"
-              "http://coolshell.cn/feed"
-              "http://blog.devtang.com/atom.xml"
-              "http://emacsist.com/rss"
-              "http://puntoblogspot.blogspot.com/feeds/2507074905876002529/comments/default"
-              "http://angelic-sedition.github.io/atom.xml"))
+      ;; yiddi:add to customize the appearance of elfeed
+      ;; http://kitchingroup.cheme.cmu.edu/blog/category/emacs/
+      ;; --------------------------------------------------------------
+      (defface relevant-elfeed-entry
+        `((t :background ,(color-lighten-name "orange1" 40)))
+        "Marks a relevant Elfeed entry.")
 
+      (defface important-elfeed-entry
+        `((t :background ,(color-lighten-name "OrangeRed2" 40)))
+        "Marks an important Elfeed entry.")
+
+      (push '(relevant relevant-elfeed-entry)
+            elfeed-search-face-alist)
+
+      (push '(important important-elfeed-entry)
+            elfeed-search-face-alist)
+
+      ;; In elfeed, each entry is a structure, and we can access the title and
+      ;; content for matching. Here is an example of a simple scoring function.
+      ;; The idea is just to match patterns, and then add to the score if it
+      ;; matches. This is not as advanced as gnus scoring, but it is a good
+      ;; starting point.
+      (defun score-elfeed-entry (entry)
+        (let ((title (elfeed-entry-title entry))
+              (content (elfeed-deref (elfeed-entry-content entry)))
+              (score 0))
+          (loop for (pattern n) in '(("emacs\\|Emacs\\|Spacemacs" 1)
+                                     ("machine learning\\|neural\\|deep learning" 2)
+                                     ("Python\\|python" 1)
+                                     ("Java\\|java" 1)
+                                     ("database" 1)
+                                     ("reproducible" 1)
+                                     ("kitchin" 2))
+                if (string-match pattern title)
+                do (incf score n)
+                if (string-match pattern content)
+                do (incf score n))
+          (message "%s - %s" title score)
+
+          ;; store score for later in case I ever integrate machine learning
+          (setf (elfeed-meta entry :my/score) score)
+
+          (cond
+           ((= score 1)
+            (elfeed-tag entry 'relevant))
+           ((> score 1)
+            (elfeed-tag entry 'important)))
+          entry))
+
+      (add-hook 'elfeed-new-entry-hook 'score-elfeed-entry)
+      (add-hook 'elfeed-new-entry-hook
+                (elfeed-make-tagger :before "2 days ago"
+                                    :remove 'unread))
+      ;; --------------------------------------------------------------
+      ;; yiddi:add to quick find 'important' and 'relevant'
+      (define-key elfeed-search-mode-map (kbd "i")
+        (lambda () (interactive)
+          (elfeed-search-set-filter "@6-months-ago +unread +important")))
+
+      (define-key elfeed-search-mode-map (kbd "e")
+        (lambda () (interactive)
+          (elfeed-search-set-filter "@6-months-ago +unread +relevant")))
+
+      ;; (define-key elfeed-search-mode-map (kbd "c")
+      ;;   (lambda () (interactive)
+      ;;     (elfeed-search-set-filter "@6-months-ago +unread")))
+      ;; --------------------------------------------------------------
       ;; (evilify elfeed-search-mode elfeed-search-mode-map)
       (evilified-state-evilify-map elfeed-search-mode-map
         :mode elfeed-search-mode
@@ -1120,7 +1188,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
         (setq magit-completing-read-function 'magit-builtin-completing-read)
 
         (magit-define-popup-switch 'magit-push-popup ?u
-          "Set upstream" "--set-upstream")
+                                   "Set upstream" "--set-upstream")
         ))
 
     ;; prefer two way ediff

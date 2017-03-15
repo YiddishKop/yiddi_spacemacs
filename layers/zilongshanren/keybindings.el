@@ -9,6 +9,20 @@
 ;;
 ;;; License: GPLv3
 
+;;--------------------------------yiddi:add hotkeys------------------------------------
+;; http://doc.norang.ca/org-mode.html
+;; 在一個buffer中循環顯示 org-dictionary 裏的所有文件
+(global-set-key (kbd "<f6>") 'org-insert-link)
+(global-set-key (kbd "<f7>") 'org-store-link)
+;; yiddi:cycle 已經被綁定爲 C-'
+;; (global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
+(global-set-key (kbd "<f11>") 'org-clock-goto)
+(global-set-key (kbd "<f12>") 'org-agenda)
+
+;;--------------------------------yiddi:add hotkeys------------------------------------
+
+
+
 ;; A complementary binding to the apropos-command (C-h a)
 (define-key 'help-command "A" 'apropos)
 (define-key 'help-command (kbd "C-f") 'find-function)
@@ -23,7 +37,8 @@
 (define-key global-map (kbd "C-c y") 'youdao-dictionary-search-at-point+)
 (define-key global-map (kbd "<f9>") 'org-capture)
 (define-key global-map (kbd "C-c t") 'org-capture)
-(define-key global-map (kbd "<f8>") 'zilongshanren/show-current-buffer-major-mode)
+;; yiddi:comment
+;; (define-key global-map (kbd "<f8>") 'zilongshanren/show-current-buffer-major-mode)
 
 (global-set-key (kbd "C-c b") 'org-iswitchb)
 (global-set-key (kbd "C-c i e") 'spacemacs/auto-yasnippet-expand)

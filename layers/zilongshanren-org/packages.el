@@ -11,6 +11,40 @@
 
 ;;; Code:
 
+;; the %i would copy the selected text into the template
+;;http://www.howardism.org/Technical/Emacs/journaling-org.html
+;;add multi-file journal
+
+;; 我的一個模板用來收藏一些好的代碼,模板會要求我輸入語言
+;; 我希望這個代碼在被收集到snippet.org時能自動歸類到對應語言的
+;; headline下,如果沒有這種語言就新建一個top heading.
+;; ------------------------------------------------------------------------
+;; yiddi/match-and-get 用來獲取這個自己輸入的這個語言的字符串
+;; DONE 但是後來發現,在文字真正錄入之前已經確定了要存儲的目的file和headline的位置
+;;      但這次編程仍然學到了一些知識
+;; (defun yiddi/match-and-get (bf)
+;;   "match and get the string between bg-str and end-str in bf"
+;;   (interactive)
+;;   (let* ((len1 (length "#+BEGIN_SRC"))
+;;          (begin  (+ len1  (string-match "\\#\\+BEGIN_SRC" bf)))
+;;          (end (string-match "\n" bf begin)))
+;;     ;; 由於 string-match 只匹配開始位置,所以要加上這個string的長度
+;;     (substring bf (1+ begin) end)))
+
+;; (defun yiddi/insert-to-or-create-prop-hd ()
+;;   (interactive)
+;;   (let* ((bf (org-capture-get :buffer))
+;;          (hd (yiddi/match-and-get bf)))
+;;     (goto-char (point-min))
+;;     (if (re-search-forward
+;;          (format org-complex-heading-regexp-format (regexp-quote hd))
+;;          nil t)
+;;         (goto-char (point-at-bol))
+;;       (goto-char (point-max))
+;;       (or (bolp) (insert "\n"))
+;;       (insert "* " hd "\n")
+;;       (beginning-of-line 0))))
+;; ------------------------------------------------------------------------
 (defconst zilongshanren-org-packages
   '(
     (org :location built-in)
@@ -41,7 +75,7 @@
   (with-eval-after-load 'org
     (progn
       ;; ----------------------
-      ;; yiddi:add, want company in org-mode
+      ;; yiddi:add, need company in org-mode
       ;; (spacemacs|disable-company org-mode)
       ;; ----------------------
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
@@ -94,7 +128,24 @@
       (setq org-todo-keywords
             (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
                     (sequence "WAITING(w@/!)" "SOMEDAY(S)" "|" "CANCELLED(c@/!)" "MEETING(m)" "PHONE(p)")
+                    ;; yiddi:add for questions in my head
+                    (sequence "UNSOLVED(u)" "|" "SOLVED(v@/!)")
+                    (sequence "IMAGING(i)" "ORGINAZE(o!)" "RUNNING(r!)" "|" "FINISH(f@/!)")
+                    (sequence "MESSY(e)"  "|" "CLEAR(l)")
                     )))
+      ;; yiddi:add to customize the appearence of todo keywords
+      (setq org-todo-keyword-faces
+            '(
+              ("UNSOLVED" . org-warning)
+              ("SOLVED" . "dark green")
+              ("MESSY" . org-warning)
+              ("CLEAR" . "dark green")
+              ("IMAGING" . org-warning)
+              ("ORGINAZE" . "dark yellow")
+              ("RUNNING" . "dark green")
+              ("FINISH" . "dark blue")
+              ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       ;; Org clock
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -235,6 +286,8 @@ unwanted space when exporting org-mode to html."
       ;; define the refile targets
       (setq org-agenda-file-note (expand-file-name "notes.org" org-agenda-dir))
       (setq org-agenda-file-gtd (expand-file-name "gtd.org" org-agenda-dir))
+      (setq org-agenda-file-question (expand-file-name "question.org" org-agenda-dir))
+      (setq org-agenda-file-brainstom (expand-file-name "brainstom.org" org-agenda-dir))
       (setq org-agenda-file-journal (expand-file-name "journal.org" org-agenda-dir))
       (setq org-agenda-file-code-snippet (expand-file-name "snippet.org" org-agenda-dir))
       (setq org-default-notes-file (expand-file-name "gtd.org" org-agenda-dir))
@@ -245,88 +298,98 @@ unwanted space when exporting org-mode to html."
         (spacemacs/set-leader-keys-for-major-mode 'org-agenda-mode
           "." 'spacemacs/org-agenda-transient-state/body)
         )
-      ;; the %i would copy the selected text into the template
-      ;;http://www.howardism.org/Technical/Emacs/journaling-org.html
-      ;;add multi-file journal
+
       (setq org-capture-templates
             '(
-              ;; yiddi:comment ------------------
-              ;; ("s" "Code Snippet" entry
-              ;;  (file org-agenda-file-code-snippet)
-              ;;  "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
-              ;; ("w" "work" entry (file+headline org-agenda-file-gtd "Cocos2D-X")
-              ;;  "* TODO [#A] %?\n  %i\n %U"
-              ;;  :empty-lines 1)
-              ;; ("c" "Chrome" entry (file+headline org-agenda-file-note "Quick notes")
-              ;;  "* [#C] %?\n %(zilongshanren/retrieve-chrome-current-tab-url)\n %i\n %U"
-              ;;  :empty-lines 1)
-              ;; ("j" "知識收集:Journal Entry" entry (file+datetree org-agenda-file-journal)
-              ;;  "* %?"
-              ;;  :empty-lines 1)
-              ;; ("n" "notes" entry (file+headline org-agenda-file-note "Quick notes")
-              ;;  "* %?\n  %i\n %U"
-              ;;  :empty-lines 1)
-              ;; ---------------------------------
               ;; 快速收集就是GTD中的inbox，這裏收集所有在你腦中的東西
               ;; 撰寫時即需通過refile功能加入某個分支：
               ;; 可以當下解決的，立即解決，或者找人解決，注明PERSON
               ;; 不能解決的分步驟解決，並將其上升爲project,通過org-refile 發送到其他三個文件中做詳細部署。
-              ("t" "任務收集：Inbox" entry (file+headline org-agenda-file-gtd "Inbox")
+              ;; ;; 短時間內完成不了，必須分步驟完成，就升級其爲project。
+              ;; ;; 家庭，個人，工作
+              ;; --------------心得-----------------
+              ;; :empty-line 1 是說在當前capture放置到目的地時是否添加1個換行.一般都需要,不然下次在capture就亂了
+              ;; --------------已知 error---------------------
+              ;; 經過實驗,clock-resume 工作並不如文檔所說,他並沒有暫停當前任務的計時
+              ("t" "任務收集: TODO-Inbox" entry (file+headline org-agenda-file-gtd "Inbox")
                "* TODO [#B] %?\n  %i\n"
                :empty-lines 1)
-              ("w" "任務整理：Work" entry (file+headline org-agenda-file-gtd "Work")
-               "* TODO [#B] %?\n  %i\n"
+              ("a" "雜問收集: Question" entry (file+headline org-agenda-file-question "Question")
+               "*** UNSOLVED  %?
+                    :INFO:
+                    :from-file:\t%F
+                    :add-time: \t%U
+                    :END:
+                    :LOGBOOK:
+                        1.
+                        2.
+                    :END: "
                :empty-lines 1)
-              ;; 短時間內完成不了，必須分步驟完成，就升級其爲project。
-              ;; 家庭，個人，工作
-              ("f" "任務整理：Family" entry (file+headline org-agenda-file-gtd "Family")
-               "* SOMEDAY %?
-               :PROPERTIES:
-               :PERSON: %^{preson}
-               :WHERE: %^{where}
-               :WHEN: %^{When}t
-               :END:
-               - Recommended by %^{recommended by}
-               :LOGBOOK:
-               - Added: %U
-               :END: "
-               :empty-lines 1)
-              ("y" "任務整理：Personal" entry (file+headline org-agenda-file-gtd "Personal")
-               "* TODO [#C] %?\n  %i\n %U"
-               :empty-lines 1)
-              ;; 瑣事進入，會直接暫停當前正在進行的任務計時，轉而進行這個任務，直到這個任務標記完成
-              ;; 才會重啓。
-              ("m" "瑣事進入：Trifles" entry (file+headline org-agenda-file-gtd "Trifles")
-               "* TODO [#C] %?\n  %i\n %T"
-               :clock-in)
               ;; yiddi:comment 知識收集需要及時做 org-refile
-              ("j" "知識收集:Journal Entry" entry (file+headline org-agenda-file-journal "QuickNotes")
-               "* %?\n  %i\n %U"
+              ("j" "知識收集: Journal by manual" entry (file+datetree org-agenda-file-journal)
+               "* MESSY %?\n  %i\n"
+               :empty-lines 1)
+              ;; yiddi:add used for collection of some doc or book or org converted from html
+              ("e" "知識收集: Journal by emacs" entry (file+datetree org-agenda-file-journal)
+               "* MESSY %?\n%c\nLink:\t%a\nFile:\t%F\n"
+               :empty-lines 1)
+              ;; yiddi:add 用來給當前Clock-In的任務補充記錄和信息
+              ("c" "瑣信收集: Add to Clock-In" checkitem (clock)
+               "%?\t %U"
+               :empty-lines 1)
+              ;; yiddi:add to collect good source code block-------------------------------
+              ;; TODO (file+function "path/to/file" function-finding-location), use this to find the node
+              ;; which indentical with inputed language to add
+              ("s" "代碼收集: Code Snippet" entry (file+headline org-agenda-file-code-snippet "Code Snippet")
+               "* %?\t%^g\n#+BEGIN_SRC %^{language}\n%c\n#+END_SRC\nLink:\t%a\nFile:\t%F\n")
+              ("b" "奇思收集: Brainstom" entry (file+headline org-agenda-file-brainstom "Brainstom")
+               "* SOMEDAY [#B] %?\n  %i\n %U"
                :empty-lines 1)
               ;; yiddi:add to coordinate with org-capture extension in chrome. -----------
               ;; Must Not modify the hotkey 'p' and 'L', they are defined by chrome extension: org-capture
-              ("p" "知識收集:Chome Clip" entry (file+headline org-agenda-file-journal"Chome Clip Inbox")
-               "* %? \nSource: %u, %c\n\n\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n"
+              ("p" "------------Chome Clip" entry (file+datetree org-agenda-file-journal)
+               "* MESSY %? \nSource: %u, %c\n\n\n%i\n"
                :empty-lines 1)
-              ("L" "知識收集:Chrom Link" entry (file+headline org-agenda-file-journal"Chome Inbox")
-               "* %? [[%:link][%:description]] \nCaptured On: %U"
-               )
-              ;; yiddi:add to collect good source code block-------------------------------
-              ("s" "代碼收集:Code Snippet" entry (file org-agenda-file-code-snippet)
-               "* %?\t%^g\n#+BEGIN_SRC %^{language}\n%c\n#+END_SRC\nLink:\t%a\nFile:\t%F\n")
-              ("i" "Imaginary Ideas" entry (file+headline org-agenda-file-note "Imaginary Ideas")
-               "* SOMEDAY [#B] %?\n  %i\n %U"
+              ("L" "------------Chrom Link" entry (file+datetree org-agenda-file-journal)
+               "* MESSY %? [[%:link][%:description]] \nCaptured On: %U"
                :empty-lines 1)
               ;; yiddi:comment 這個template相當於對當前文件做簡單的位置記錄
-              ("l" "links" entry (file+headline org-agenda-file-note "Quick notes")
+              ("l" "------------links" entry (file+headline org-agenda-file-note "Quick notes")
                "* [#C] %?\n  %i\n %a \n %U"
                :empty-lines 1)
               ;; -------------------------------------------------------------------------
               ))
+      ;; yiddi:add for reminders
+      ;; Erase all reminders and rebuilt reminders for today from the agenda
+      (defun bh/org-agenda-to-appt ()
+        (interactive)
+        (setq appt-time-msg-list nil)
+        (org-agenda-to-appt))
+
+      ;; Rebuild the reminders everytime the agenda is displayed
+      (add-hook 'org-agenda-finalize-hook 'bh/org-agenda-to-appt 'append)
+
+      ;; This is at the end of my .emacs - so appointments are set up when Emacs starts
+      (bh/org-agenda-to-appt)
+
+      ;; Activate appointments so we get notifications
+      (appt-activate t)
+
+      ;; If we leave Emacs running overnight - reset the appointments one minute after midnight
+      (run-at-time "24:01" nil 'bh/org-agenda-to-appt)
+      ;; --------------------------------------------------------------
+
       ;;An entry without a cookie is treated just like priority ' B '.
       ;;So when create new task, they are default 重要且紧急
+      (setq org-agenda-compact-blocks t)
       (setq org-agenda-custom-commands
             '(
+              ;; yiddi:add
+              ;; http://doc.norang.ca/org-mode.html
+              ("h" "Habits" tags-todo "STYLE=\"habit\""
+               ((org-agenda-overriding-header "Habits")
+                (org-agenda-sorting-strategy
+                 '(todo-state-down effort-up category-keep))))
               ("w" . "任务安排")
               ("wa" "重要且紧急的任务" tags-todo "+PRIORITY=\"A\"")
               ("wb" "重要且不紧急的任务" tags-todo "-Weekly-Monthly-Daily+PRIORITY=\"B\"")

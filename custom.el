@@ -12,9 +12,7 @@
  '(company-show-numbers t)
  '(company-statistics-auto-restore nil)
  '(ctags-update-delay-seconds 1024)
- '(elfeed-feeds
-   (quote
-    ("http://kitchingroup.cheme.cmu.edu/blog/category/emacs/feed/" "http://kitchingroup.cheme.cmu.edu/blog/category/data-analysis/feed/")))
+ '(elfeed-feeds (quote ("http://nullprogram.com/feed/")))
  '(erc-nick "zilongshanren")
  '(erc-port 6666)
  '(evil-want-C-i-jump t)
@@ -57,6 +55,76 @@
  '(org-agenda-skip-scheduled-if-done t)
  '(org-agenda-start-on-weekday nil)
  '(org-agenda-text-search-extra-files (quote (agenda-archives)))
+ '(org-capture-templates
+   (quote
+    (("t" "任務收集: TODO-Inbox" entry
+      (file+headline org-agenda-file-gtd "Inbox")
+      "* TODO [#B] %?
+  %i
+" :empty-lines 1)
+     ("a" "雜問收集: Question" entry
+      (file+headline org-agenda-file-question "Question")
+      "*** UNSOLVED  %?
+                    :INFO:
+                    :from-file:	%F
+                    :add-time: 	%U
+                    :END:
+                    :LOGBOOK:
+                        1.
+                        2.
+                    :END: " :empty-lines 1)
+     ("j" "知識收集: Journal by manual" entry
+      (file+datetree org-agenda-file-journal)
+      "* MESSY %?
+  %i
+" :empty-lines 1)
+     ("e" "知識收集: Journal by emacs" entry
+      (file+datetree org-agenda-file-journal)
+      "* MESSY %?
+%c
+ Link:	%a
+File:	%F
+" :empty-lines 1)
+     ("c" "瑣信收集: Add to Clock-In" checkitem
+      (clock)
+      "%?	 %U" :empty-lines 1)
+     ("z" "test: Journal by emacs" entry
+      (file+datetree org-agenda-file-journal)
+      "* Datetree %?
+  %i
+ %U" :empty-lines 1)
+     ("s" "代碼收集: Code Snippet" entry
+      (file+function org-agenda-file-code-snippet yiddi/insert-to-or-create-prop-hd)
+      "* %?	%^g
+#+BEGIN_SRC %^{language}
+%c
+#+END_SRC
+Link:	%a
+File:	%F
+")
+     ("b" "奇思收集: Brainstom" entry
+      (file+headline org-agenda-file-brainstom "Brainstom")
+      "* SOMEDAY [#B] %?
+  %i
+ %U" :empty-lines 1)
+     ("p" "------------Chome Clip" entry
+      (file+datetree org-agenda-file-journal)
+      "* MESSY %?
+Source: %u, %c
+
+
+%i
+" :empty-lines 1)
+     ("L" "------------Chrom Link" entry
+      (file+datetree org-agenda-file-journal)
+      "* MESSY %? [[%:link][%:description]]
+Captured On: %U" :empty-lines 1)
+     ("l" "------------links" entry
+      (file+headline org-agenda-file-note "Quick notes")
+      "* [#C] %?
+  %i
+ %a
+ %U" :empty-lines 1))))
  '(org-deadline-warning-days 14)
  '(org-fast-tag-selection-single-key (quote expert))
  '(org-log-into-drawer t)
@@ -64,7 +132,7 @@
  '(org-reverse-note-order t)
  '(package-selected-packages
    (quote
-    (names chinese-word-at-point ctable orglue org-mac-link epic elfeed-org volatile-highlights vi-tilde-fringe spaceline powerline rainbow-delimiters org-bullets lorem-ipsum highlight-indentation helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds google-translate flx-ido fancy-battery eyebrowse evil-unimpaired evil-mc evil-lisp-state smartparens evil-indent-plus evil-exchange evil-escape evil-ediff evil-args define-word clean-aindent-mode ace-jump-helm-line youdao-dictionary yapfify yaml-mode xterm-color ws-butler wrap-region winum which-key wgrep web-mode web-beautify visual-regexp-steroids uuidgen use-package unfill toc-org tiny tide tagedit solarized-theme smex slim-mode sicp shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs rbenv ranger rainbow-mode rainbow-identifiers racket-mode pyvenv pytest pyenv-mode py-isort pug-mode projectile-rails prodigy popwin pip-requirements persp-mode peep-dired pbcopy paradox osx-trash osx-dictionary origami org-pomodoro org-plus-contrib org-octopress open-junk-file ob-restclient ob-http nodejs-repl neotree mwim multi-term move-text mmm-mode minitest markdown-toc macrostep lua-mode live-py-mode lispy linum-relative link-hint less-css-mode launchctl js2-refactor js-doc ivy-hydra info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-global hide-comnt help-fns+ helm-github-stars helm-ag graphviz-dot-mode golden-ratio gnuplot glsl-mode gitignore-mode github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist ggtags fuzzy flyspell-correct-ivy flycheck-pos-tip flx find-file-in-project fill-column-indicator feature-mode expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-iedit-state evil-anzu etags-select eshell-z eshell-prompt-extras esh-help engine-mode emmet-mode elisp-slime-nav dumb-jump dockerfile-mode docker discover-my-major deft cython-mode counsel company-web company-tern company-statistics company-restclient company-c-headers company-anaconda column-enforce-mode color-identifiers-mode coffee-mode cmake-font-lock clojure-snippets clj-refactor cider-eval-sexp-fu chruby bundler bind-map auto-yasnippet auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-link 4clojure)))
+    (pandoc-mode ox-pandoc kanban names chinese-word-at-point ctable orglue org-mac-link epic elfeed-org volatile-highlights vi-tilde-fringe spaceline powerline rainbow-delimiters org-bullets lorem-ipsum highlight-indentation helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds google-translate flx-ido fancy-battery eyebrowse evil-unimpaired evil-mc evil-lisp-state smartparens evil-indent-plus evil-exchange evil-escape evil-ediff evil-args define-word clean-aindent-mode ace-jump-helm-line youdao-dictionary yapfify yaml-mode xterm-color ws-butler wrap-region winum which-key wgrep web-mode web-beautify visual-regexp-steroids uuidgen use-package unfill toc-org tiny tide tagedit solarized-theme smex slim-mode sicp shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs rbenv ranger rainbow-mode rainbow-identifiers racket-mode pyvenv pytest pyenv-mode py-isort pug-mode projectile-rails prodigy popwin pip-requirements persp-mode peep-dired pbcopy paradox osx-trash osx-dictionary origami org-pomodoro org-plus-contrib org-octopress open-junk-file ob-restclient ob-http nodejs-repl neotree mwim multi-term move-text mmm-mode minitest markdown-toc macrostep lua-mode live-py-mode lispy linum-relative link-hint less-css-mode launchctl js2-refactor js-doc ivy-hydra info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-global hide-comnt help-fns+ helm-github-stars helm-ag graphviz-dot-mode golden-ratio gnuplot glsl-mode gitignore-mode github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist ggtags fuzzy flyspell-correct-ivy flycheck-pos-tip flx find-file-in-project fill-column-indicator feature-mode expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-iedit-state evil-anzu etags-select eshell-z eshell-prompt-extras esh-help engine-mode emmet-mode elisp-slime-nav dumb-jump dockerfile-mode docker discover-my-major deft cython-mode counsel company-web company-tern company-statistics company-restclient company-c-headers company-anaconda column-enforce-mode color-identifiers-mode coffee-mode cmake-font-lock clojure-snippets clj-refactor cider-eval-sexp-fu chruby bundler bind-map auto-yasnippet auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-link 4clojure)))
  '(paradox-github-token t)
  '(ring-bell-function (quote ignore))
  '(safe-local-variable-values
