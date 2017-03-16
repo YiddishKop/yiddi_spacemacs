@@ -14,10 +14,23 @@
 ;; 在一個buffer中循環顯示 org-dictionary 裏的所有文件
 (global-set-key (kbd "<f6>") 'org-insert-link)
 (global-set-key (kbd "<f7>") 'org-store-link)
-;; yiddi:cycle 已經被綁定爲 C-'
-;; (global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
+
+;; show footnote by popup-tip
+;; used for take note and display it immediately when cursor locate on ref
+;; of a footnote mark. instead of going to the end of org file to see it there.
+(defun yiddi/display-fn-def ()
+  "display the footnote definition at point"
+  (interactive)
+  (let ((is-ref (org-footnote-at-reference-p)))
+    (if is-ref
+        (popup-tip (nth 3 (org-footnote-get-definition (car is-ref))))
+      (message "No definition to display"))))
+
+(global-set-key (kbd "<f10>") 'yiddi/display-fn-def)
+(global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
 (global-set-key (kbd "<f11>") 'org-clock-goto)
 (global-set-key (kbd "<f12>") 'org-agenda)
+
 
 ;;--------------------------------yiddi:add hotkeys------------------------------------
 

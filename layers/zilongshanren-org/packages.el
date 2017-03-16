@@ -343,7 +343,7 @@ unwanted space when exporting org-mode to html."
               ("s" "代碼收集: Code Snippet" entry (file+headline org-agenda-file-code-snippet "Code Snippet")
                "* %?\t%^g\n#+BEGIN_SRC %^{language}\n%c\n#+END_SRC\nLink:\t%a\nFile:\t%F\n")
               ("b" "奇思收集: Brainstom" entry (file+headline org-agenda-file-brainstom "Brainstom")
-               "* SOMEDAY [#B] %?\n  %i\n %U"
+               "* IMAGING [#B] %?\n  %i\n %U"
                :empty-lines 1)
               ;; yiddi:add to coordinate with org-capture extension in chrome. -----------
               ;; Must Not modify the hotkey 'p' and 'L', they are defined by chrome extension: org-capture
