@@ -338,12 +338,13 @@ unwanted space when exporting org-mode to html."
                "%?\t %U"
                :empty-lines 1)
               ;; yiddi:add to collect good source code block-------------------------------
-              ;; TODO (file+function "path/to/file" function-finding-location), use this to find the node
+              ;; Failed (file+function "path/to/file" function-finding-location), use this to find the node
               ;; which indentical with inputed language to add
+              ;; DONE 後日提醒: 這個function是直接用函數名, 不加雙引號包圍,不加單引號置前, 什麼都不用加.
               ("s" "代碼收集: Code Snippet" entry (file+headline org-agenda-file-code-snippet "Code Snippet")
                "* %?\t%^g\n#+BEGIN_SRC %^{language}\n%c\n#+END_SRC\nLink:\t%a\nFile:\t%F\n")
               ("b" "奇思收集: Brainstom" entry (file+headline org-agenda-file-brainstom "Brainstom")
-               "* IMAGING [#B] %?\n  %i\n %U"
+               "* IMAGING [#B] %?\n%i\n%U"
                :empty-lines 1)
               ;; yiddi:add to coordinate with org-capture extension in chrome. -----------
               ;; Must Not modify the hotkey 'p' and 'L', they are defined by chrome extension: org-capture

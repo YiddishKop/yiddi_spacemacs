@@ -107,7 +107,6 @@ values."
                                       sicp
                                       winum ;yiddi:add winum
                                       kanban ;yiddi:add to enhance org-mode
-                                      (popup-fn :location (recipe :fetcher github :repo "YiddishKop/yiddi-popup-fn"))
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
