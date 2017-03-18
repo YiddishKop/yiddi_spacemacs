@@ -33,7 +33,9 @@ values."
    '(
      ;; winum                             ;; yiddi:add to solve "error during redisplay:(eval (propertize...)) in zilongshanren-ui.el"
      ;; restructuredtext                   ;; yiddi:add
-     ;; yiddi:add
+     (mu4e :variables
+           mu4e-account-alist t
+           mu4e-installation-path "/usr/share/emacs/site-lisp/mu4e") ;;yiddi:add
      pandoc
      (elfeed :variables
              rmh-elfeed-org-files (list "~/Documents/org-notes/Elfeed/elfeed.org")
@@ -355,6 +357,19 @@ values."
    ))
 
 (defun dotspacemacs/user-init ()
+  ;; yiddi:add to highlight the color of block in org file
+  (defface org-block-begin-line
+    '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+    "Face used for the line delimiting the begin of source blocks.")
+
+  (defface org-block-background
+    '((t (:background "#FFFFEA")))
+    "Face used for the source block background.")
+
+  (defface org-block-end-line
+    '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+    "Face used for the line delimiting the end of source blocks.")
+  ;; -------------------------------------------------------------------------
   (setq configuration-layer--elpa-archives
         '(("melpa-cn" . "https://elpa.zilongshanren.com/melpa/")
           ("org-cn"   . "https://elpa.zilongshanren.com/org/")
@@ -380,6 +395,112 @@ values."
   (setq purpose-mode nil)
   )
 (defun dotspacemacs/user-config ()
+
+  ;; yiddi: add to mu4e -------------------------------------
+  ;; use this funtion to decrypt the encrypted 2-steps password
+  ;; http://coldnew.github.io/blog/2016/01-02_mu4e/
+  (defun offlineimap-get-password (host port)
+    (require 'netrc)
+    (message "Hello ,enter this X function")
+    (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
+           (hostentry (netrc-machine netrc host port port)))
+      (when hostentry (netrc-get hostentry "password"))))
+  ;; --------------------------------------------------------
+  ;; yiddi: add to convert html to txt by eww's lib
+  (require 'mu4e-contrib)
+  (setq mu4e-html2text-command 'mu4e-shr2text)
+  ;; try to emulate some of the eww key-bindings
+  (add-hook 'mu4e-view-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<tab>") 'shr-next-link)
+              (local-set-key (kbd "<backtab>") 'shr-previous-link)))
+  ;; --------------------------------------------------------
+  ;; setup mu4e
+  (setq mu4e-maildir "~/.mail"          ;;yiddi: should not be symblic link
+        mu4e-sent-folder   "/gmail/sent" ;; folder for sent messages
+        mu4e-trash-folder  "/gmail/trash"
+        mu4e-drafts-folder "/gmail/drafts"     ;; unfinished messages
+        mu4e-refile-folder "/gmail/archive"
+        mu4e-get-mail-command "offlineimap"
+        mu4e-update-interval 60
+        mu4e-compose-signature-auto-include nil
+        mu4e-view-show-images t
+        mu4e-view-show-addresses t)
+  ;; --------------------------------------------------------
+  ;; yiddi: add settings to send mail: SMTP setup------------
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-stream-type 'starttls
+        starttls-use-gnutls t)
+  ;; Personal info
+  (setq user-full-name "Long,Yuan")          ; FIXME: add your info here
+  (setq user-mail-address "yiddishkop@gmail.com"); FIXME: add your info here
+  ;; gmail setup
+  (setq smtpmail-smtp-server "smtp.gmail.com")
+  (setq smtpmail-smtp-service 587)
+  (setq smtpmail-smtp-user "yiddishkop@gmail.com") ; FIXME: add your gmail addr here
+  ;; --------------------------------------------------------
+  ;; list of all accounts (see Appendix D of the mu4e manual)
+  (defvar my-mu4e-account-alist
+    '(
+      ("yid_day"
+       (mu4e-sent-folder "/gmail/sent")
+       (mu4e-drafts-folder "/gmail/drafts")
+       (mu4e-trash-folder "/gmail/trash")
+       (mu4e-refile-folder "/gmail/archive")
+       (user-mail-address "yiddi")
+       (message-signature-file ".signature")
+       (smtpmail-default-smtp-server "mail.uni.edu")
+       (smtpmail-smtp-server "mail.uni.edu")
+       (smtpmail-smtp-service "smtp")
+       )
+      ("163"
+       (mu4e-sent-folder      "/163/sent")
+       (mu4e-drafts-folder    "/163/drafts")
+       (mu4e-trash-folder     "/163/trash")
+       (mu4e-refile-folder    "/163/archive")
+       (user-mail-address     "yiddishkop@163.com")
+       (smtpmail-default-smtp-server "smtp.163.com")
+       (smtpmail-smtp-server "smtp.163.com")
+       (smtpmail-smtp-service 25)
+       )
+      ))
+  ;;; Mail directory shortcuts
+  ;; (setq mu4e-maildir-shortcuts
+  ;;       '(("/gmail/INBOX" . ?g)
+  ;;         ("/college/INBOX" . ?c)))
+
+  ;;; Bookmarks
+  (setq mu4e-bookmarks
+        `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
+          ("date:today..now" "Today's messages" ?t)
+          ("date:7d..now" "Last 7 days" ?w)
+          ("mime:image/*" "Messages with images" ?p)
+          (,(mapconcat 'identity
+                       (mapcar
+                        (lambda (maildir)
+                          (concat "maildir:" (car maildir)))
+                        mu4e-maildir-shortcuts) " OR ")
+           "All inboxes" ?i)))
+  (setq mu4e-enable-notifications t)
+  (setq mu4e-enable-mode-line t)
+  (with-eval-after-load 'mu4e-alert
+    ;; Enable Desktop notifications
+    (mu4e-alert-set-default-style 'notifications)) ; For linux
+  ;; (mu4e-alert-set-default-style 'libnotify))  ; Alternative for linux
+  ;; --------------------------------------------------------
+  ;; yiddi: add to make org block highlight=-----------------
+  (defface org-block-begin-line
+    '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+    "Face used for the line delimiting the begin of source blocks.")
+
+  (defface org-block-background
+    '((t (:background "#FFFFEA")))
+    "Face used for the source block background.")
+
+  (defface org-block-end-line
+    '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+    "Face used for the line delimiting the end of source blocks.")
+  ;; ---------------------------------------------------------
   ;;解决org表格里面中英文对齐的问题
   (when (configuration-layer/layer-usedp 'chinese)
     (when (and (spacemacs/system-is-mac) window-system)
