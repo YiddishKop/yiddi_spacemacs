@@ -39,7 +39,7 @@ values."
      pandoc
      (elfeed :variables
              rmh-elfeed-org-files (list "~/Documents/org-notes/Elfeed/elfeed.org")
-             elfeed-enable-web-interface t
+             ;; elfeed-enable-web-interface t
              elfeed-db-directory "~/Documents/org-notes/Elfeed/.elfeed")
      ivy
      better-defaults
@@ -92,6 +92,7 @@ values."
                  typescript-fmt-on-save nil
                  typescript-fmt-tool 'typescript-formatter)
      emacs-lisp
+     common-lisp                        ;yiddi:add
      (clojure :variables clojure-enable-fancify-symbols t)
      racket
      ;; (c-c++ :variables
@@ -328,7 +329,7 @@ values."
    dotspacemacs-folding-method 'origami
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
-   dotspacemacs-smartparens-strict-mode nil
+   dotspacemacs-smartparens-strict-mode t
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc…
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
@@ -376,7 +377,7 @@ values."
           ("gnu-cn"   . "https://elpa.zilongshanren.com/gnu/")))
 
   ;; https://github.com/syl20bnr/spacemacs/issues/2705
-  ;; (setq tramp-mode nil)
+  (setq tramp-mode nil)
 
   ;; yiddi: hope to solve anaconda-mode server error problem, but failed
   ;; https://github.com/syl20bnr/spacemacs/issues/2961
@@ -422,7 +423,7 @@ values."
         mu4e-drafts-folder "/gmail/drafts"     ;; unfinished messages
         mu4e-refile-folder "/gmail/archive"
         mu4e-get-mail-command "offlineimap"
-        mu4e-update-interval 60
+        mu4e-update-interval nil
         mu4e-compose-signature-auto-include nil
         mu4e-view-show-images t
         mu4e-view-show-addresses t)
@@ -440,30 +441,30 @@ values."
   (setq smtpmail-smtp-user "yiddishkop@gmail.com") ; FIXME: add your gmail addr here
   ;; --------------------------------------------------------
   ;; list of all accounts (see Appendix D of the mu4e manual)
-  (defvar my-mu4e-account-alist
-    '(
-      ("yid_day"
-       (mu4e-sent-folder "/gmail/sent")
-       (mu4e-drafts-folder "/gmail/drafts")
-       (mu4e-trash-folder "/gmail/trash")
-       (mu4e-refile-folder "/gmail/archive")
-       (user-mail-address "yiddi")
-       (message-signature-file ".signature")
-       (smtpmail-default-smtp-server "mail.uni.edu")
-       (smtpmail-smtp-server "mail.uni.edu")
-       (smtpmail-smtp-service "smtp")
-       )
-      ("163"
-       (mu4e-sent-folder      "/163/sent")
-       (mu4e-drafts-folder    "/163/drafts")
-       (mu4e-trash-folder     "/163/trash")
-       (mu4e-refile-folder    "/163/archive")
-       (user-mail-address     "yiddishkop@163.com")
-       (smtpmail-default-smtp-server "smtp.163.com")
-       (smtpmail-smtp-server "smtp.163.com")
-       (smtpmail-smtp-service 25)
-       )
-      ))
+  ;; (defvar my-mu4e-account-alist
+  ;;   '(
+  ;;     ("yid_day"
+  ;;      (mu4e-sent-folder "/gmail/sent")
+  ;;      (mu4e-drafts-folder "/gmail/drafts")
+  ;;      (mu4e-trash-folder "/gmail/trash")
+  ;;      (mu4e-refile-folder "/gmail/archive")
+  ;;      (user-mail-address "yiddi")
+  ;;      (message-signature-file ".signature")
+  ;;      (smtpmail-default-smtp-server "mail.gmail.com") ;FIXME modify mail.gmail.com
+  ;;      (smtpmail-smtp-server "mail.gmail.com") ;FIXME modify mail.gmail.com
+  ;;      (smtpmail-smtp-service "smtp")
+  ;;      )
+  ;;     ("163"
+  ;;      (mu4e-sent-folder      "/163/sent")
+  ;;      (mu4e-drafts-folder    "/163/drafts")
+  ;;      (mu4e-trash-folder     "/163/trash")
+  ;;      (mu4e-refile-folder    "/163/archive")
+  ;;      (user-mail-address     "yiddishkop@163.com")
+  ;;      (smtpmail-default-smtp-server "smtp.163.com")
+  ;;      (smtpmail-smtp-server "smtp.163.com")
+  ;;      (smtpmail-smtp-service 25)
+  ;;      )
+  ;;     ))
   ;;; Mail directory shortcuts
   ;; (setq mu4e-maildir-shortcuts
   ;;       '(("/gmail/INBOX" . ?g)
@@ -524,8 +525,10 @@ values."
   (linum-relative-on)
   ;; TODO yiddi: company-quickhelp-mode not in *company-frontends*
   ;; (add-hook 'after-init-hook 'global-company-mode 'company-quickhelp-mode)
-  ;; TODO yiddi:error, when emacs start
-  ;; (spacemacs|add-company-backends :modes text-mode)
+  ;; FIXME yiddi:error, when emacs start, but when I use elementary os , this error disappear
+  (spacemacs|add-company-backends :modes text-mode)
+  ;; yiddi:add company-backends for common-lisp mode
+  (spacemacs|add-company-backends :modes common-lisp-mode)
   ;; TODO yiddi:add to coodinate with org-capture extension in chrome
   (require 'org-protocol)
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)

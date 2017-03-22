@@ -331,7 +331,7 @@ unwanted space when exporting org-mode to html."
                :empty-lines 1)
               ;; yiddi:add used for collection of some doc or book or org converted from html
               ("e" "知識收集: Journal by emacs" entry (file+datetree org-agenda-file-journal)
-               "* MESSY %?\n%c\nLink:\t%a\nFile:\t%F\n"
+               "* MESSY %?\n%c\nLink:  %a\nFile:  %F\n"
                :empty-lines 1)
               ;; yiddi:add 用來給當前Clock-In的任務補充記錄和信息
               ("c" "瑣信收集: Add to Clock-In" checkitem (clock)
