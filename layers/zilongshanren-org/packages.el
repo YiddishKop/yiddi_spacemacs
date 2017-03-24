@@ -67,9 +67,13 @@
     (add-hook 'org-pomodoro-long-break-finished-hook '(lambda () (zilongshanren/growl-notification "Long Break" " 💪 Ready to Go?" t)))
     ))
 
-;;In order to export pdf to support Chinese, I should install Latex at here: https://www.tug.org/mactex/
+;;In order to export pdf to support Chinese, I should install Latex at here:
+;; https://www.tug.org/mactex/
 ;; http://freizl.github.io/posts/2012-04-06-export-orgmode-file-in-Chinese.html
-;;http://stackoverflow.com/questions/21005885/export-org-mode-code-block-and-result-with-different-styles
+;; http://stackoverflow.com/questions/21005885/export-org-mode-code-block-and-result-with-different-styles
+;; http://blog.csdn.net/wuyao721/article/details/7669993
+;;    `sudo USE="cjk" emerge texlive-xetex` on Gentoo Linux
+
 (defun zilongshanren-org/post-init-org ()
   (add-hook 'org-mode-hook (lambda () (spacemacs/toggle-line-numbers-off)) 'append)
   (with-eval-after-load 'org

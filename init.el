@@ -407,6 +407,9 @@ values."
            (hostentry (netrc-machine netrc host port port)))
       (when hostentry (netrc-get hostentry "password"))))
   ;; --------------------------------------------------------
+  ;; yiddi: setup some configuration of mu4e
+  ;; Use mu4e as default mail agent
+  (setq mail-user-agent 'mu4e-user-agent)
   ;; yiddi: add to convert html to txt by eww's lib
   (require 'mu4e-contrib)
   (setq mu4e-html2text-command 'mu4e-shr2text)
@@ -417,60 +420,80 @@ values."
               (local-set-key (kbd "<backtab>") 'shr-previous-link)))
   ;; --------------------------------------------------------
   ;; setup mu4e
-  (setq mu4e-maildir "~/.mail"          ;;yiddi: should not be symblic link
+  (setq mu4e-maildir "~/.mail"           ;;yiddi: should not be symblic link
+        ;; settings for folders below this line, with head of maildir
         mu4e-sent-folder   "/gmail/sent" ;; folder for sent messages
         mu4e-trash-folder  "/gmail/trash"
-        mu4e-drafts-folder "/gmail/drafts"     ;; unfinished messages
+        mu4e-drafts-folder "/gmail/drafts" ;; unfinished messages
         mu4e-refile-folder "/gmail/archive"
         mu4e-get-mail-command "offlineimap"
         mu4e-update-interval nil
         mu4e-compose-signature-auto-include nil
         mu4e-view-show-images t
-        mu4e-view-show-addresses t)
-  ;; --------------------------------------------------------
-  ;; yiddi: add settings to send mail: SMTP setup------------
-  (setq message-send-mail-function 'smtpmail-send-it
+        mu4e-view-show-addresses t
+        ;; yiddi: add settings to send mail: SMTP setup------------
+        message-send-mail-function 'smtpmail-send-it
         smtpmail-stream-type 'starttls
         starttls-use-gnutls t)
-  ;; Personal info
-  (setq user-full-name "Long,Yuan")          ; FIXME: add your info here
-  (setq user-mail-address "yiddishkop@gmail.com"); FIXME: add your info here
-  ;; gmail setup
-  (setq smtpmail-smtp-server "smtp.gmail.com")
-  (setq smtpmail-smtp-service 587)
-  (setq smtpmail-smtp-user "yiddishkop@gmail.com") ; FIXME: add your gmail addr here
   ;; --------------------------------------------------------
+  ;; list of all accounts (see doc of mu4e)
+  (setq mu4e-account-alist
+        '(
+          ("yid_gmail"
+           (mu4e-sent-folder "/gmail/sent")
+           (mu4e-drafts-folder "/gmail/drafts")
+           (mu4e-trash-folder "/gmail/trash")
+           (mu4e-refile-folder "/gmail/archive")
+           (user-full-name "Long,Yuan")
+           (user-mail-address "yiddishkop@gmail.com")
+           (message-signature-file ".signature")
+           (smtpmail-default-smtp-server "smtp.gmail.com") ;FIXME modify mail.gmail.com
+           (smtpmail-smtp-user "yiddishkop@gmail.com") ; FIXME: add your gmail addr here
+           (smtpmail-smtp-server "smtp.gmail.com") ;FIXME modify mail.gmail.com
+           (smtpmail-smtp-service 587)
+           )
+          ("yid_163"
+           (mu4e-sent-folder      "/163/sent")
+           (mu4e-drafts-folder    "/163/drafts")
+           (mu4e-trash-folder     "/163/trash")
+           (mu4e-refile-folder    "/163/archive")
+           (user-full-name "Long,Yuan")
+           (user-mail-address     "yiddishkop@163.com")
+           (smtpmail-default-smtp-server "smtp.163.com")
+           (smtpmail-smtp-server "smtp.163.com")
+           (smtpmail-smtp-service 25)
+           )
+          ))
+  (mu4e/email-account-reset)
   ;; list of all accounts (see Appendix D of the mu4e manual)
-  ;; (defvar my-mu4e-account-alist
-  ;;   '(
-  ;;     ("yid_day"
-  ;;      (mu4e-sent-folder "/gmail/sent")
-  ;;      (mu4e-drafts-folder "/gmail/drafts")
-  ;;      (mu4e-trash-folder "/gmail/trash")
-  ;;      (mu4e-refile-folder "/gmail/archive")
-  ;;      (user-mail-address "yiddi")
-  ;;      (message-signature-file ".signature")
-  ;;      (smtpmail-default-smtp-server "mail.gmail.com") ;FIXME modify mail.gmail.com
-  ;;      (smtpmail-smtp-server "mail.gmail.com") ;FIXME modify mail.gmail.com
-  ;;      (smtpmail-smtp-service "smtp")
-  ;;      )
-  ;;     ("163"
-  ;;      (mu4e-sent-folder      "/163/sent")
-  ;;      (mu4e-drafts-folder    "/163/drafts")
-  ;;      (mu4e-trash-folder     "/163/trash")
-  ;;      (mu4e-refile-folder    "/163/archive")
-  ;;      (user-mail-address     "yiddishkop@163.com")
-  ;;      (smtpmail-default-smtp-server "smtp.163.com")
-  ;;      (smtpmail-smtp-server "smtp.163.com")
-  ;;      (smtpmail-smtp-service 25)
-  ;;      )
-  ;;     ))
-  ;;; Mail directory shortcuts
+
+  ;; (defun my-mu4e-set-account ()
+  ;;   "Set the account for composing a message."
+  ;;   (let* ((account
+  ;;           (if mu4e-compose-parent-message
+  ;;               (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+  ;;                 (string-match "/\\(.*?\\)/" maildir)
+  ;;                 (match-string 1 maildir))
+  ;;             (completing-read (format "Compose with account: (%s) "
+  ;;                                      (mapconcat #'(lambda (var) (car var))
+  ;;                                                 my-mu4e-account-alist "/"))
+  ;;                              (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+  ;;                              nil t nil nil (caar my-mu4e-account-alist))))
+  ;;          (account-vars (cdr (assoc account my-mu4e-account-alist))))
+  ;;     (if account-vars
+  ;;         (mapc #'(lambda (var)
+  ;;                   (set (car var) (cadr var)))
+  ;;               account-vars)
+  ;;       (error "No email account found"))))
+  ;; ;; list of all accounts (see Appendix D of the mu4e manual)
+  ;; (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+
+;;; Mail directory shortcuts
   ;; (setq mu4e-maildir-shortcuts
   ;;       '(("/gmail/INBOX" . ?g)
   ;;         ("/college/INBOX" . ?c)))
 
-  ;;; Bookmarks
+;;; Bookmarks
   (setq mu4e-bookmarks
         `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
           ("date:today..now" "Today's messages" ?t)
@@ -526,9 +549,9 @@ values."
   ;; TODO yiddi: company-quickhelp-mode not in *company-frontends*
   ;; (add-hook 'after-init-hook 'global-company-mode 'company-quickhelp-mode)
   ;; FIXME yiddi:error, when emacs start, but when I use elementary os , this error disappear
-  (spacemacs|add-company-backends :modes text-mode)
+  ;; (spacemacs|add-company-backends :modes text-mode)
   ;; yiddi:add company-backends for common-lisp mode
-  (spacemacs|add-company-backends :modes common-lisp-mode)
+  ;; (spacemacs|add-company-backends :modes common-lisp-mode)
   ;; TODO yiddi:add to coodinate with org-capture extension in chrome
   (require 'org-protocol)
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
@@ -604,4 +627,4 @@ values."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-)
+  )
