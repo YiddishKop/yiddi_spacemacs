@@ -5,13 +5,16 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-case-fold-search nil t)
+ '(ahs-case-fold-search nil)
  '(command-log-mode-window-size 50)
  '(company-dabbrev-minimum-length 3)
  '(company-dabbrev-other-buffers nil)
  '(company-show-numbers t)
  '(company-statistics-auto-restore nil)
  '(ctags-update-delay-seconds 1024)
+ '(custom-safe-themes
+   (quote
+    ("704a108ab29ea8fc8feb718a538e9ce45d732dce41e5b04585f43a6352c5519e" default)))
  '(elfeed-feeds (quote ("http://nullprogram.com/feed/")))
  '(erc-nick "zilongshanren")
  '(erc-port 6666)
@@ -21,6 +24,7 @@
  '(expand-region-contract-fast-key "V")
  '(expand-region-exclude-text-mode-expansions (quote (html-mode nxml-mode web-mode)))
  '(expand-region-reset-fast-key "r")
+ '(fci-rule-color "#151515" t)
  '(global-command-log-mode nil)
  '(helm-buffer-max-length 56)
  '(helm-move-to-line-cycle-in-source t)

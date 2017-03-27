@@ -11,6 +11,10 @@
 
 (setq zilongshanren-misc-packages
       '(
+        ;; yiddi:add, setup mu4e
+        mu4e
+        ;; yiddi:add, artist mode with ido select function
+        artist
         elfeed
         projectile
         prodigy
@@ -45,6 +49,131 @@
         (highlight-global :location (recipe :fetcher github :repo "glen-dai/highlight-global"))
         ))
 
+(defun zilongshanren-misc/init-artist ()
+;;; integrate ido with artist-mode
+  (defun artist-ido-select-operation (type)
+    "Use ido to select a drawing operation in artist-mode"
+    (interactive (list (ido-completing-read "Drawing operation: "
+                                            (list "Pen" "Pen Line" "line" "straight line" "rectangle"
+                                                  "square" "poly-line" "straight poly-line" "ellipse"
+                                                  "circle" "text see-thru" "text-overwrite" "spray-can"
+                                                  "erase char" "erase rectangle" "vaporize line" "vaporize lines"
+                                                  "cut rectangle" "cut square" "copy rectangle" "copy square"
+                                                  "paste" "flood-fill"))))
+    (artist-select-operation type))
+
+
+  (defun artist-ido-select-settings (type)
+    "Use ido to select a setting to change in artist-mode"
+    (interactive (list (ido-completing-read "Setting: "
+                                            (list "Set Fill" "Set Line" "Set Erase" "Spray-size" "Spray-chars"
+                                                  "Rubber-banding" "Trimming" "Borders"))))
+    (if (equal type "Spray-size")
+        (artist-select-operation "spray set size")
+      (call-interactively (artist-fc-get-fn-from-symbol
+                           (cdr (assoc type '(("Set Fill" . set-fill)
+                                              ("Set Line" . set-line)
+                                              ("Set Erase" . set-erase)
+                                              ("Rubber-banding" . rubber-band)
+                                              ("Trimming" . trimming)
+                                              ("Borders" . borders)
+                                              ("Spray-chars" . spray-chars))))))))
+
+
+  (add-hook 'artist-mode-init-hook
+            (lambda ()
+              (define-key artist-mode-map (kbd "C-c C-a C-o") 'artist-ido-select-operation)
+              (define-key artist-mode-map (kbd "C-c C-a C-c") 'artist-ido-select-settings))))
+
+(defun zilongshanren-misc/init-mu4e ()
+  ;; use this funtion to decrypt the encrypted 2-steps password
+  ;; http://coldnew.github.io/blog/2016/01-02_mu4e/
+  (defun offlineimap-get-password (host port)
+    (require 'netrc)
+    (message "Hello ,enter this X function")
+    (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
+           (hostentry (netrc-machine netrc host port port)))
+      (when hostentry (netrc-get hostentry "password"))))
+  ;; --------------------------------------------------------
+  ;; yiddi: setup some configuration of mu4e
+  ;; yiddi: add to convert html to txt by eww's lib
+  (require 'mu4e)
+  (require 'mu4e-contrib)
+  (setq mu4e-html2text-command 'mu4e-shr2text)
+  ;; try to emulate some of the eww key-bindings
+  (add-hook 'mu4e-view-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<tab>") 'shr-next-link)
+              (local-set-key (kbd "<backtab>") 'shr-previous-link)))
+  ;; --------------------------------------------------------
+  ;; setup mu4e
+  (setq mu4e-maildir "~/.mail" ;;yiddi: should not be symblic link
+        ;; settings for folders below this line, with head of maildir
+        mu4e-sent-folder   "/gmail/sent" ;; folder for sent messages
+        mu4e-trash-folder  "/gmail/trash"
+        mu4e-drafts-folder "/gmail/drafts" ;; unfinished messages
+        mu4e-refile-folder "/gmail/archive"
+        mu4e-get-mail-command "offlineimap"
+        mu4e-update-interval nil
+        mu4e-compose-signature-auto-include nil
+        mu4e-view-show-images t
+        mu4e-view-show-addresses t
+        ;; yiddi: add settings to send mail: SMTP setup------------
+        message-send-mail-function 'smtpmail-send-it
+        smtpmail-stream-type 'starttls
+        starttls-use-gnutls t)
+  ;; --------------------------------------------------------
+  ;; list of all accounts (see doc of mu4e)
+  ;; [[file:~/.emacs.d/layers/+email/mu4e/README.org::*Multiple%20Accounts][Multiple Accounts]]
+  (setq mu4e-account-alist
+        '(
+          ("yid_gmail"
+           (mu4e-sent-folder "/gmail/sent")
+           (mu4e-drafts-folder "/gmail/drafts")
+           (mu4e-trash-folder "/gmail/trash")
+           (mu4e-refile-folder "/gmail/archive")
+           (user-full-name "Long,Yuan")
+           (user-mail-address "yiddishkop@gmail.com")
+           (message-signature-file ".signature")
+           (smtpmail-default-smtp-server "smtp.gmail.com") ;FIXME modify mail.gmail.com
+           (smtpmail-smtp-user "yiddishkop@gmail.com") ; FIXME: add your gmail addr here
+           (smtpmail-smtp-server "smtp.gmail.com") ;FIXME modify mail.gmail.com
+           (smtpmail-smtp-service 587)
+           )
+          ("yid_163"
+           (mu4e-sent-folder      "/163/sent")
+           (mu4e-drafts-folder    "/163/drafts")
+           (mu4e-trash-folder     "/163/trash")
+           (mu4e-refile-folder    "/163/archive")
+           (user-full-name "Long,Yuan")
+           (user-mail-address     "yiddishkop@163.com")
+           (smtpmail-default-smtp-server "smtp.163.com")
+           (smtpmail-smtp-server "smtp.163.com")
+           (smtpmail-smtp-service 25)
+           )
+          ))
+  ;; (mu4e/email-account-reset)
+
+;;; Bookmarks
+  (setq mu4e-bookmarks
+        `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
+          ("date:today..now" "Today's messages" ?t)
+          ("date:7d..now" "Last 7 days" ?w)
+          ("mime:image/*" "Messages with images" ?p)
+          (,(mapconcat 'identity
+                       (mapcar
+                        (lambda (maildir)
+                          (concat "maildir:" (car maildir)))
+                        mu4e-maildir-shortcuts) " OR ")
+           "All inboxes" ?i)))
+  (setq mu4e-enable-notifications t)
+  (setq mu4e-enable-mode-line t)
+  (with-eval-after-load 'mu4e-alert
+    ;; Enable Desktop notifications
+    (mu4e-alert-set-default-style 'notifications))
+  )       ; For linux
+;; (mu4e-alert-set-default-style 'libnotify))  ; Alternative for linux
+;; --------------------------------------------------------
 (defun zilongshanren-misc/init-highlight-global ()
   (use-package highlight-global
     :init

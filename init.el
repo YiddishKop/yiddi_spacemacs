@@ -194,7 +194,10 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(solarized-light
+   dotspacemacs-themes '(
+                         jazz
+                         sleuven
+                         olarized-light
                          solarized-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -396,134 +399,11 @@ values."
   (setq purpose-mode nil)
   )
 (defun dotspacemacs/user-config ()
+  ;; FIXME
+  ;; some function in this file, not execute as emacs.
+  ;; because of the emacs will run from top one by one, so
+  ;; i think maybe some function not execute well, so left function not execute.
 
-  ;; yiddi: add to mu4e -------------------------------------
-  ;; use this funtion to decrypt the encrypted 2-steps password
-  ;; http://coldnew.github.io/blog/2016/01-02_mu4e/
-  (defun offlineimap-get-password (host port)
-    (require 'netrc)
-    (message "Hello ,enter this X function")
-    (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
-           (hostentry (netrc-machine netrc host port port)))
-      (when hostentry (netrc-get hostentry "password"))))
-  ;; --------------------------------------------------------
-  ;; yiddi: setup some configuration of mu4e
-  ;; Use mu4e as default mail agent
-  (setq mail-user-agent 'mu4e-user-agent)
-  ;; yiddi: add to convert html to txt by eww's lib
-  (require 'mu4e-contrib)
-  (setq mu4e-html2text-command 'mu4e-shr2text)
-  ;; try to emulate some of the eww key-bindings
-  (add-hook 'mu4e-view-mode-hook
-            (lambda ()
-              (local-set-key (kbd "<tab>") 'shr-next-link)
-              (local-set-key (kbd "<backtab>") 'shr-previous-link)))
-  ;; --------------------------------------------------------
-  ;; setup mu4e
-  (setq mu4e-maildir "~/.mail"           ;;yiddi: should not be symblic link
-        ;; settings for folders below this line, with head of maildir
-        mu4e-sent-folder   "/gmail/sent" ;; folder for sent messages
-        mu4e-trash-folder  "/gmail/trash"
-        mu4e-drafts-folder "/gmail/drafts" ;; unfinished messages
-        mu4e-refile-folder "/gmail/archive"
-        mu4e-get-mail-command "offlineimap"
-        mu4e-update-interval nil
-        mu4e-compose-signature-auto-include nil
-        mu4e-view-show-images t
-        mu4e-view-show-addresses t
-        ;; yiddi: add settings to send mail: SMTP setup------------
-        message-send-mail-function 'smtpmail-send-it
-        smtpmail-stream-type 'starttls
-        starttls-use-gnutls t)
-  ;; --------------------------------------------------------
-  ;; list of all accounts (see doc of mu4e)
-  (setq mu4e-account-alist
-        '(
-          ("yid_gmail"
-           (mu4e-sent-folder "/gmail/sent")
-           (mu4e-drafts-folder "/gmail/drafts")
-           (mu4e-trash-folder "/gmail/trash")
-           (mu4e-refile-folder "/gmail/archive")
-           (user-full-name "Long,Yuan")
-           (user-mail-address "yiddishkop@gmail.com")
-           (message-signature-file ".signature")
-           (smtpmail-default-smtp-server "smtp.gmail.com") ;FIXME modify mail.gmail.com
-           (smtpmail-smtp-user "yiddishkop@gmail.com") ; FIXME: add your gmail addr here
-           (smtpmail-smtp-server "smtp.gmail.com") ;FIXME modify mail.gmail.com
-           (smtpmail-smtp-service 587)
-           )
-          ("yid_163"
-           (mu4e-sent-folder      "/163/sent")
-           (mu4e-drafts-folder    "/163/drafts")
-           (mu4e-trash-folder     "/163/trash")
-           (mu4e-refile-folder    "/163/archive")
-           (user-full-name "Long,Yuan")
-           (user-mail-address     "yiddishkop@163.com")
-           (smtpmail-default-smtp-server "smtp.163.com")
-           (smtpmail-smtp-server "smtp.163.com")
-           (smtpmail-smtp-service 25)
-           )
-          ))
-  (mu4e/email-account-reset)
-  ;; list of all accounts (see Appendix D of the mu4e manual)
-
-  ;; (defun my-mu4e-set-account ()
-  ;;   "Set the account for composing a message."
-  ;;   (let* ((account
-  ;;           (if mu4e-compose-parent-message
-  ;;               (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
-  ;;                 (string-match "/\\(.*?\\)/" maildir)
-  ;;                 (match-string 1 maildir))
-  ;;             (completing-read (format "Compose with account: (%s) "
-  ;;                                      (mapconcat #'(lambda (var) (car var))
-  ;;                                                 my-mu4e-account-alist "/"))
-  ;;                              (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
-  ;;                              nil t nil nil (caar my-mu4e-account-alist))))
-  ;;          (account-vars (cdr (assoc account my-mu4e-account-alist))))
-  ;;     (if account-vars
-  ;;         (mapc #'(lambda (var)
-  ;;                   (set (car var) (cadr var)))
-  ;;               account-vars)
-  ;;       (error "No email account found"))))
-  ;; ;; list of all accounts (see Appendix D of the mu4e manual)
-  ;; (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
-
-;;; Mail directory shortcuts
-  ;; (setq mu4e-maildir-shortcuts
-  ;;       '(("/gmail/INBOX" . ?g)
-  ;;         ("/college/INBOX" . ?c)))
-
-;;; Bookmarks
-  (setq mu4e-bookmarks
-        `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
-          ("date:today..now" "Today's messages" ?t)
-          ("date:7d..now" "Last 7 days" ?w)
-          ("mime:image/*" "Messages with images" ?p)
-          (,(mapconcat 'identity
-                       (mapcar
-                        (lambda (maildir)
-                          (concat "maildir:" (car maildir)))
-                        mu4e-maildir-shortcuts) " OR ")
-           "All inboxes" ?i)))
-  (setq mu4e-enable-notifications t)
-  (setq mu4e-enable-mode-line t)
-  (with-eval-after-load 'mu4e-alert
-    ;; Enable Desktop notifications
-    (mu4e-alert-set-default-style 'notifications)) ; For linux
-  ;; (mu4e-alert-set-default-style 'libnotify))  ; Alternative for linux
-  ;; --------------------------------------------------------
-  ;; yiddi: add to make org block highlight=-----------------
-  (defface org-block-begin-line
-    '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
-    "Face used for the line delimiting the begin of source blocks.")
-
-  (defface org-block-background
-    '((t (:background "#FFFFEA")))
-    "Face used for the source block background.")
-
-  (defface org-block-end-line
-    '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
-    "Face used for the line delimiting the end of source blocks.")
   ;; ---------------------------------------------------------
   ;;解决org表格里面中英文对齐的问题
   (when (configuration-layer/layer-usedp 'chinese)

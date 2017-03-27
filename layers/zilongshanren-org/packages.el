@@ -82,6 +82,9 @@
       ;; yiddi:add, need company in org-mode
       ;; (spacemacs|disable-company org-mode)
       ;; ----------------------
+      ;; no extra indentation in the source blocks
+      ;; copy from : https://github.com/jkitchin/jmax/blob/master/jmax-org.el
+      (setq org-src-preserve-indentation t)
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "," 'org-priority)
       (require 'org-compat)
@@ -150,6 +153,20 @@
               ("FINISH" . "dark blue")
               ))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;; yiddi: add to make org block highlight
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      (defface org-block-begin-line
+        '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+        "Face used for the line delimiting the begin of source blocks.")
+
+      (defface org-block-background
+        '((t (:background "#FFFFEA")))
+        "Face used for the source block background.")
+
+      (defface org-block-end-line
+        '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+        "Face used for the line delimiting the end of source blocks.")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       ;; Org clock
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -364,8 +381,11 @@ unwanted space when exporting org-mode to html."
                :empty-lines 1)
               ;; -------------------------------------------------------------------------
               ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       ;; yiddi:add for reminders
       ;; Erase all reminders and rebuilt reminders for today from the agenda
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (defun bh/org-agenda-to-appt ()
         (interactive)
         (setq appt-time-msg-list nil)
