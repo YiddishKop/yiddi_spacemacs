@@ -55,7 +55,7 @@
     ;; org-tree-slide
     ;; ox-reveal
     ;; worf
-    ;; org-download
+    org-download ;; yiddi:comment out
     ;; plain-org-wiki
     )
   )
@@ -66,7 +66,6 @@
     (add-hook 'org-pomodoro-short-break-finished-hook '(lambda () (zilongshanren/growl-notification "Short Break" "🐝 Ready to Go?" t)))
     (add-hook 'org-pomodoro-long-break-finished-hook '(lambda () (zilongshanren/growl-notification "Long Break" " 💪 Ready to Go?" t)))
     ))
-
 ;;In order to export pdf to support Chinese, I should install Latex at here:
 ;; https://www.tug.org/mactex/
 ;; http://freizl.github.io/posts/2012-04-06-export-orgmode-file-in-Chinese.html
@@ -284,6 +283,8 @@
          ;; -------
          (calc . t)
          (java . t)
+         (matlab . t)
+         (octave . t)
          ;; (rst . t)
          ;; -------
          ))
@@ -567,9 +568,11 @@ holding contextual information."
     :commands org-mac-grab-link
     :init
     (progn
-      (add-hook 'org-mode-hook
-                (lambda ()
-                  (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link))))
+      ;; yiddi:comment out,never use
+      ;; (add-hook 'org-mode-hook
+      ;;           (lambda ()
+      ;;             (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))
+      )
     :defer t))
 
 (defun zilongshanren-org/post-init-ox-reveal ()
@@ -603,7 +606,15 @@ holding contextual information."
   (use-package org-download
     :defer t
     :init
-    (org-download-enable)))
+    ;; yiddi:modify to bind (org-download-screenshot) to 'C-c g'
+    (progn
+      (org-download-enable)
+      ;; TODO
+      (add-hook 'org-mode-hook
+                (lambda ()
+                  (define-key org-mode-map (kbd "C-c g") 'org-download-screenshot)))
+      )
+    ))
 
 (defun zilongshanren-org/init-plain-org-wiki ()
   (use-package plain-org-wiki

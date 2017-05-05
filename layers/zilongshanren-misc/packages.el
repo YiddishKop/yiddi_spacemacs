@@ -99,7 +99,9 @@
   ;; yiddi: add to convert html to txt by eww's lib
   (require 'mu4e)
   (require 'mu4e-contrib)
-  (setq mu4e-html2text-command 'mu4e-shr2text)
+  (setq mu4e-html2text-command   'mu4e-shr2text
+
+        )
   ;; try to emulate some of the eww key-bindings
   (add-hook 'mu4e-view-mode-hook
             (lambda ()

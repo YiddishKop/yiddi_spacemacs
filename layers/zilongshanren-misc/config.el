@@ -36,7 +36,7 @@
                                             ("82dx" "Cocos2D-X")
 
                                             ;; signature
-                                            ("8zl" "zilongshanren")
+                                            ("8yd" "yiddishkop")
                                             ;; emacs regex
                                             ("8d" "\\([0-9]+?\\)")
                                             ("8str" "\\([^\"]+?\\)\"")))

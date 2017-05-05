@@ -132,6 +132,10 @@
     (remove-hook 'emacs-lisp-mode-hook 'auto-compile-mode))
 
 (defun zilongshanren-programming/post-init-python ()
+  ;; yiddi:add to add anaconda-mode to company-backends
+  (add-hook 'python-mode-hook
+            (lambda()
+              (set (make-local-variable 'company-bakcends)  '(company-anaconda))))
   (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
   ;; if you use pyton3, then you could comment the following line
   (setq python-shell-interpreter "python"))

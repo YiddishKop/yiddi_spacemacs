@@ -33,9 +33,11 @@ values."
    '(
      ;; winum                             ;; yiddi:add to solve "error during redisplay:(eval (propertize...)) in zilongshanren-ui.el"
      ;; restructuredtext                   ;; yiddi:add
+     dash                               ;;yiddi:add
+     ipython-notebook                   ;;yiddi:add
      (mu4e :variables
-           mu4e-account-alist t
-           mu4e-installation-path "/usr/share/emacs/site-lisp/mu4e") ;;yiddi:add
+        mu4e-account-alist        t
+        mu4e-installation-path    "/usr/share/emacs/site-lisp/mu4e");;yiddi:add
      pandoc
      (elfeed :variables
              rmh-elfeed-org-files (list "~/Documents/org-notes/Elfeed/elfeed.org")
@@ -108,20 +110,26 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(
                                       sicp
-                                      winum ;yiddi:add winum
+                                      winum  ;yiddi:add winum
                                       kanban ;yiddi:add to enhance org-mode
+                                      (matlab-mode
+                                       :fetcher git
+                                       :url "https://git.code.sf.net/p/matlab-emacs/src"
+                                       :module "matlab-emacs"
+                                       :files ("*.el" "*.m" ("toolbox" "toolbox/*.m") ("templates" "templates/*.srt")))
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
 
-   ;;DONE yiddi:add, delete *company-quickhelp* in *dotspacemacs-excluded-packages*
+   ;;DONE yiddi:add, delete *company-quickhelp*
+   ;;                delete *org-download* in *dotspacemacs-excluded-packages*
    dotspacemacs-excluded-packages
    '(magit-gh-pulls magit-gitflow org-projectile evil-mc
                     evil-args evil-ediff evil-exchange evil-unimpaired
                     evil-indent-plus volatile-highlights smartparens
                     spaceline holy-mode skewer-mode rainbow-delimiters
                     highlight-indentation vi-tilde-fringe eyebrowse
-                    org-bullets smooth-scrolling org-repo-todo org-download org-timer
+                    org-bullets smooth-scrolling org-repo-todo org-timer
                     livid-mode git-gutter git-gutter-fringe  evil-escape
                     leuven-theme gh-md evil-lisp-state spray lorem-ipsum
                     ac-ispell ace-jump-mode auto-complete auto-dictionary
@@ -195,9 +203,11 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
+                         spacemacs-dark
+                         spacemacs-light
+                         solarized-light
                          jazz
                          sleuven
-                         olarized-light
                          solarized-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -362,17 +372,17 @@ values."
 
 (defun dotspacemacs/user-init ()
   ;; yiddi:add to highlight the color of block in org file
-  (defface org-block-begin-line
-    '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
-    "Face used for the line delimiting the begin of source blocks.")
+  ;; (defface org-block-begin-line
+  ;;   '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+  ;;   "Face used for the line delimiting the begin of source blocks.")
 
-  (defface org-block-background
-    '((t (:background "#FFFFEA")))
-    "Face used for the source block background.")
+  ;; (defface org-block-background
+  ;;   '((t (:background "#FFFFEA")))
+  ;;   "Face used for the source block background.")
 
-  (defface org-block-end-line
-    '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
-    "Face used for the line delimiting the end of source blocks.")
+  ;; (defface org-block-end-line
+  ;;   '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+  ;;   "Face used for the line delimiting the end of source blocks.")
   ;; -------------------------------------------------------------------------
   (setq configuration-layer--elpa-archives
         '(("melpa-cn" . "https://elpa.zilongshanren.com/melpa/")
