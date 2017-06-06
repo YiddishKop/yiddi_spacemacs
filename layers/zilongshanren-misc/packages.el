@@ -12,7 +12,7 @@
 (setq zilongshanren-misc-packages
       '(
         ;; yiddi:add, setup mu4e
-        mu4e
+        ;; mu4e
         ;; yiddi:add, artist mode with ido select function
         artist
         elfeed

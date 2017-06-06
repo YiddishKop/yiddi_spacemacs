@@ -33,8 +33,10 @@ values."
    '(
      ;; winum                             ;; yiddi:add to solve "error during redisplay:(eval (propertize...)) in zilongshanren-ui.el"
      ;; restructuredtext                   ;; yiddi:add
+     bibtex                             ;; yiddi:add
+     scala
      dash                               ;;yiddi:add
-     ipython-notebook                   ;;yiddi:add
+     ;; ipython-notebook                   ;;yiddi:add
      (mu4e :variables
         mu4e-account-alist        t
         mu4e-installation-path    "/usr/share/emacs/site-lisp/mu4e");;yiddi:add
@@ -97,8 +99,8 @@ values."
      common-lisp                        ;yiddi:add
      (clojure :variables clojure-enable-fancify-symbols t)
      racket
-     ;; (c-c++ :variables
-     ;;        c-c++-default-mode-for-headers 'c++-mode);; yiddi:never use
+     (c-c++ :variables
+            c-c++-default-mode-for-headers 'c++-mode);; yiddi:may use future
      zilongshanren
      (chinese :packages youdao-dictionary fcitx
               :variables chinese-enable-fcitx nil
@@ -112,6 +114,7 @@ values."
                                       sicp
                                       winum  ;yiddi:add winum
                                       kanban ;yiddi:add to enhance org-mode
+                                      elpy
                                       (matlab-mode
                                        :fetcher git
                                        :url "https://git.code.sf.net/p/matlab-emacs/src"
@@ -123,9 +126,10 @@ values."
 
    ;;DONE yiddi:add, delete *company-quickhelp*
    ;;                delete *org-download* in *dotspacemacs-excluded-packages*
+   ;;                delete *evil-ediff*
    dotspacemacs-excluded-packages
    '(magit-gh-pulls magit-gitflow org-projectile evil-mc
-                    evil-args evil-ediff evil-exchange evil-unimpaired
+                    evil-args evil-exchange evil-unimpaired
                     evil-indent-plus volatile-highlights smartparens
                     spaceline holy-mode skewer-mode rainbow-delimiters
                     highlight-indentation vi-tilde-fringe eyebrowse
@@ -392,6 +396,24 @@ values."
   ;; https://github.com/syl20bnr/spacemacs/issues/2705
   (setq tramp-mode nil)
 
+  ;; yiddi: add path to my recorded macro directory
+  (load-file "~/.spacemacs.d/Macros/macros")
+  ;; yiddi: add python path
+  (add-to-list 'exec-path "/home/yiddi/anaconda3/envs/tensorflow/bin")
+  (add-to-list 'exec-path "/home/yiddi/anaconda3/envs/tensorflow/lib")
+  (add-to-list 'exec-path "/usr/local/cuda-8.0/lib64")
+  (setenv "PATH"
+          (concat
+           "/usr/local/cuda-8.0/lib64" ":"
+           (getenv "PATH")
+           )
+          )
+  (setenv "LD_LIBRARY_PATH"
+          (concat
+           "/usr/local/cuda-8.0/lib64" ":"
+           (getenv "LD_LIBRARY_PATH")
+           )
+          )
   ;; yiddi: hope to solve anaconda-mode server error problem, but failed
   ;; https://github.com/syl20bnr/spacemacs/issues/2961
   (setenv "NO_PROXY" "127.0.0.1" )
@@ -421,6 +443,17 @@ values."
       (spacemacs//set-monospaced-font "Source Code Pro" "Hiragino Sans GB" 14 16)))
   ;; yiddi: enable winum-mode, to fix window-num can not display in head of mode-line
   (winum-mode)
+
+  ;; yiddi: add configuration about bibtex mode
+  (setq org-ref-default-bibliography '("~/Papers/references.bib")
+        org-ref-pdf-directory "~/Papers/"
+        org-ref-bibliography-notes "~/Papers/notes.org")
+
+  ;; yiddi: add configuration about bibtex mode
+  ;; (setq org-ref-open-pdf-function
+  ;;       (lambda (fpath)
+  ;;         (start-process "zathura" "*helm-bibtex-zathura*" "/usr/bin/zathura" fpath)))
+
   ;; Setting Chinese Font
   (when (and (spacemacs/system-is-mswindows) window-system)
     (setq ispell-program-name "aspell")
@@ -448,6 +481,15 @@ values."
 
   ;; temp fix for ivy-switch-buffer
   ;; (spacemacs/set-leader-keys "bb" 'helm-mini)
+
+  ;; yiddi:add to set env by OS $PATH
+  ;; I modify 'PATH' to 'LD_LIBRARY_PATH' to store my tensorflow lib path to env of emacs
+  ;; http://andrewjamesjohnson.com/setting-environment-variables-in-gui-emacs/
+  ;; (defun set-exec-path-from-shell-PATH ()
+  ;;   (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo $LD_LIBRARY_PATH'")))
+  ;;     (setenv "PATH" path-from-shell)
+  ;;     (setq exec-path (split-string path-from-shell path-separator))))
+  ;; (set-exec-path-from-shell-PATH)
 
   (global-hungry-delete-mode t)
   (spacemacs|diminish helm-gtags-mode)
