@@ -9,4 +9,5 @@
 ;;
 ;;; License: GPLv3
 
-(configuration-layer/remove-layer 'chinese)
+;; yiddi: comment out for using chinese-layer
+;; (configuration-layer/remove-layer 'chinese)

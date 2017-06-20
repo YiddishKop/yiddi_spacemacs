@@ -102,15 +102,16 @@ values."
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode);; yiddi:may use future
      zilongshanren
-     (chinese :packages youdao-dictionary fcitx
-              :variables chinese-enable-fcitx nil
-              chinese-enable-youdao-dict t)
+     (chinese :variables chinese-enable-fcitx nil
+              chinese-enable-youdao-dict t
+              )
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(
+                                      monokai-theme
                                       sicp
                                       winum  ;yiddi:add winum
                                       kanban ;yiddi:add to enhance org-mode
@@ -120,6 +121,7 @@ values."
                                        :url "https://git.code.sf.net/p/matlab-emacs/src"
                                        :module "matlab-emacs"
                                        :files ("*.el" "*.m" ("toolbox" "toolbox/*.m") ("templates" "templates/*.srt")))
+                                      chinese-pyim-greatdict
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -207,12 +209,15 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
-                         spacemacs-dark
-                         spacemacs-light
-                         solarized-light
-                         jazz
-                         sleuven
-                         solarized-dark)
+                         zenburn
+                         monokai
+                         ;; sleuven
+                         ;; jazz
+                         ;; spacemacs-dark
+                         ;; spacemacs-light
+                         ;; solarized-light
+                         ;; solarized-dark
+                         )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -439,10 +444,11 @@ values."
   ;; i think maybe some function not execute well, so left function not execute.
 
   ;; ---------------------------------------------------------
-  ;;解决org表格里面中英文对齐的问题
+  ;; 解决org表格里面中英文对齐的问题
   (when (configuration-layer/layer-usedp 'chinese)
-    (when (and (spacemacs/system-is-mac) window-system)
-      (spacemacs//set-monospaced-font "Source Code Pro" "Hiragino Sans GB" 14 16)))
+    ;; yiddi:comment out for linux system used only
+    ;; (when (and (spacemacs/system-is-mac) window-system)
+    (spacemacs//set-monospaced-font "Source Code Pro" "Noto Sans CJK SC" 16 16))
   ;; yiddi: enable winum-mode, to fix window-num can not display in head of mode-line
   (winum-mode)
 
@@ -457,14 +463,25 @@ values."
   ;;         (start-process "zathura" "*helm-bibtex-zathura*" "/usr/bin/zathura" fpath)))
 
   ;; Setting Chinese Font
-  (when (and (spacemacs/system-is-mswindows) window-system)
-    (setq ispell-program-name "aspell")
-    (setq w32-pass-alt-to-system nil)
-    (setq w32-apps-modifier 'super)
-    (dolist (charset '(kana han symbol cjk-misc bopomofo))
-      (set-fontset-font (frame-parameter nil 'font)
-                        charset
-                        (font-spec :family "Microsoft Yahei" :size 14))))
+  ;; (when (and (spacemacs/system-is-mswindows) window-system)
+  ;;   (setq ispell-program-name "aspell")
+  ;;   (setq w32-pass-alt-to-system nil)
+  ;;   (setq w32-apps-modifier 'super)
+  ;;   (dolist (charset '(kana han symbol cjk-misc bopomofo))
+  ;;     (set-fontset-font (frame-parameter nil 'font)
+  ;;                       charset
+  ;;                       (font-spec :family "Microsoft Yahei" :size 14))))
+
+
+  ;; yiddi:add, zilong's configuration is not for linux,so add these lines
+  ;; Chinese Font
+  ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  (dolist (charset '(kana han symbol cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font)
+                      charset
+                      (font-spec :family "Noto Sans CJK SC" :size 16)))
+  ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
   (fset 'evil-visual-update-x-selection 'ignore)
 
@@ -499,6 +516,58 @@ values."
   (spacemacs|diminish which-key-mode)
   (spacemacs|diminish spacemacs-whitespace-cleanup-mode)
   (spacemacs|diminish counsel-mode)
+
+  ;; yiddi:add copy from chinese-pyim website setttings recommended by author
+  ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  (use-package chinese-pyim
+    :ensure nil
+    :config
+    ;; 激活 basedict 拼音词库
+    (use-package chinese-pyim-greatdict
+      :ensure nil
+      :config (chinese-pyim-greatdict-enable))
+
+    ;; 五笔用户使用 wbdict 词库
+    ;; (use-package chinese-pyim-wbdict
+    ;;   :ensure nil
+    ;;   :config (chinese-pyim-wbdict-gbk-enable))
+
+    (setq default-input-method "chinese-pyim")
+
+    ;; 我使用全拼
+    (setq pyim-default-scheme 'quanpin)
+
+    ;; 设置 pyim 探针设置，这是 pyim 高级功能设置，可以实现 *无痛* 中英文切换 :-)
+    ;; 我自己使用的中英文动态切换规则是：
+    ;; 1. 光标只有在注释里面时，才可以输入中文。
+    ;; 2. 光标前是汉字字符时，才能输入中文。
+    ;; 3. 使用 M-j 快捷键，强制将光标前的拼音字符串转换为中文。
+    (setq-default pyim-english-input-switch-functions
+                  '(pyim-probe-dynamic-english
+                    pyim-probe-isearch-mode
+                    pyim-probe-program-mode
+                    pyim-probe-org-structure-template))
+
+    (setq-default pyim-punctuation-half-width-functions
+                  '(pyim-probe-punctuation-line-beginning
+                    pyim-probe-punctuation-after-punctuation))
+
+    ;; 开启拼音搜索功能
+    (setq pyim-isearch-enable-pinyin-search t)
+
+    ;; 使用 pupup-el 来绘制选词框
+    (setq pyim-page-tooltip 'popup)
+
+    ;; 选词框显示5个候选词
+    (setq pyim-page-length 5)
+
+    ;; 让 Emacs 启动时自动加载 pyim 词库
+    (add-hook 'emacs-startup-hook
+              #'(lambda () (pyim-restart-1 t)))
+    :bind
+    (("M-p" . pyim-convert-code-at-point) ;与 pyim-probe-dynamic-english 配合
+     ("C-;" . pyim-delete-word-from-personal-buffer)))
+  ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   (evilified-state-evilify-map special-mode-map :mode special-mode)
 
