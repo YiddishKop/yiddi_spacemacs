@@ -34,6 +34,7 @@ values."
      ;; winum                             ;; yiddi:add to solve "error during redisplay:(eval (propertize...)) in zilongshanren-ui.el"
      ;; restructuredtext                   ;; yiddi:add
      bibtex                             ;; yiddi:add
+     java                               ;; yiddi:add
      scala
      dash                               ;;yiddi:add
      ;; ipython-notebook                   ;;yiddi:add
@@ -111,6 +112,8 @@ values."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(
+                                      gradle-mode ;;yiddi:add to fit java-mode
+                                      toc-org
                                       monokai-theme
                                       sicp
                                       winum  ;yiddi:add winum
@@ -482,6 +485,25 @@ values."
                       (font-spec :family "Noto Sans CJK SC" :size 16)))
   ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+  ;; yiddi: add for eclim-mode
+  ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  (setq eclim-eclipse-dirs '("~/eclipse")
+        eclim-executable "~/.eclipse/org.eclipse.platform_4.6.3_2008655440_linux_gtk_x86_64/eclim")
+
+  (setq
+   ;; Use another eclimd executable
+   ;; eclimd-executable "/path/to/another/executable"
+   ;; Specify the workspace to use by default
+   eclimd-default-workspace "~/Worklap/Eclim_space"
+   ;; Whether or not to block emacs until eclimd is ready
+   ;; eclimd-wait-for-process t
+   )
+  (require 'eclim)
+  (add-hook 'java-mode-hook 'eclim-mode)
+  (require 'eclimd)
+  (require 'gradle-mode)
+  (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
+  ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   (fset 'evil-visual-update-x-selection 'ignore)
 
