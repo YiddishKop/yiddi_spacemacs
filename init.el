@@ -212,6 +212,8 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
+                         moe-light
+                         moe-dark
                          zenburn
                          monokai
                          ;; sleuven
@@ -404,7 +406,8 @@ values."
           ("gnu-cn"   . "https://elpa.zilongshanren.com/gnu/")))
 
   ;; https://github.com/syl20bnr/spacemacs/issues/2705
-  (setq tramp-mode nil)
+  ;; yiddi:add, to use tramp in shiyanlou by ssh
+  ;; (setq tramp-mode nil)
 
   ;; yiddi: add path to my recorded macro directory
   (load-file "~/.spacemacs.d/Macros/macros")
@@ -429,7 +432,7 @@ values."
   (setenv "NO_PROXY" "127.0.0.1" )
   (setenv "no_proxy" "127.0.0.1" )
 
-  (setq tramp-ssh-controlmaster-options
+  (setq 121.40.64.22:32989tramp-ssh-controlmaster-options
         "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
 
   ;; yiddi:never use ss proxy. But it will cause anacond-mode failed.
@@ -499,10 +502,24 @@ values."
    ;; eclimd-wait-for-process t
    )
   (require 'eclim)
-  (add-hook 'java-mode-hook 'eclim-mode)
-  (require 'eclimd)
+  ;; (setq eclimd-autostart t)
+  (defun my-java-mode-hook ()
+    (eclim-mode t))
+  (add-hook 'java-mode-hook 'my-java-mode-hook)
+
   (require 'gradle-mode)
   (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
+
+
+  ;; add the company support
+  ;; (require 'company)
+  ;; (require 'company-emacs-eclim)
+  ;; (company-emacs-eclim-setup)
+  ;; (global-company-mode t)
+
+  ;; yiddi:add to solve eclim keep 'saving and wrote to ***.java'
+  ;; https://github.com/senny/emacs-eclim/issues/127
+  ;; (setq eclim-auto-save nil)
   ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   (fset 'evil-visual-update-x-selection 'ignore)

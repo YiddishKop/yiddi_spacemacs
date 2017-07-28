@@ -56,9 +56,10 @@
 ;; tramp, for sudo access
 ;; very slow!!!!
 ;; for profiling emacs --debug-init --timed-requires --profile
-;; (require 'tramp)
+;; yiddi commentout the folllowing two line codes, to use tramp in shiyanlou
+(require 'tramp)
 ;; keep in mind known issues with zsh - see emacs wiki
-;; (setq tramp-default-method "ssh")
+(setq tramp-default-method "ssh")
 
 ;; This line has very bad performance lose!!!!!!!!!!!!!!!!!!!
 ;; (set-default 'imenu-auto-rescan t)
