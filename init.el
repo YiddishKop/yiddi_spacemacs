@@ -37,7 +37,7 @@ values."
      java                               ;; yiddi:add
      scala
      dash                               ;;yiddi:add
-     ;; ipython-notebook                   ;;yiddi:add
+     ipython-notebook                   ;;yiddi:add
      (mu4e :variables
         mu4e-account-alist        t
         mu4e-installation-path    "/usr/share/emacs/site-lisp/mu4e");;yiddi:add
@@ -228,7 +228,7 @@ values."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 16
+                               :size 18
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
